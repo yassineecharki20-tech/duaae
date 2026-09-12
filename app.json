@@ -1,0 +1,100 @@
+{
+  "expo": {
+    "name": "DUAA | دعاء",
+    "slug": "duaa",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "duaa",
+    "userInterfaceStyle": "automatic",
+    "backgroundColor": "#F9F6EE",
+    "primaryColor": "#0B5C41",
+    "icon": "./assets/images/icon.png",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "splash": {
+      "image": "./assets/images/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#F9F6EE"
+    },
+    "ios": {
+      "bundleIdentifier": "app.duaa.mobile",
+      "supportsTablet": true,
+      "icon": "./assets/images/icon.png",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "app.duaa.mobile",
+      "edgeToEdgeEnabled": true,
+      "softwareKeyboardLayoutMode": "resize",
+      "adaptiveIcon": {
+        "backgroundColor": "#0B5C41",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": false,
+          "data": [
+            {
+              "scheme": "duaa"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png",
+      "name": "DUAA | دعاء",
+      "shortName": "DUAA",
+      "lang": "ar",
+      "dir": "rtl",
+      "themeColor": "#0B5C41",
+      "backgroundColor": "#F9F6EE",
+      "display": "standalone",
+      "orientation": "portrait",
+      "description": "دعاء — رفيقك اليومي للأدعية والأذكار والتسبيح."
+    },
+    "plugins": [
+      "expo-router",
+      "expo-localization",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#F9F6EE",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 160,
+          "dark": {
+            "backgroundColor": "#0A1512",
+            "image": "./assets/images/splash-icon-dark.png",
+            "imageWidth": 160
+          }
+        }
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "DUAA does not use the microphone."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": false
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      }
+    }
+  }
+}

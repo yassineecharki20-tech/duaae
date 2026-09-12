@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="320" viewBox="0 0 1024 320">
+  
+  <g transform="rotate(-12 512 80)">
+    <mask id="cr5128038-12">
+      <circle cx="512" cy="80" r="38" fill="#fff"/>
+      <circle cx="527.2" cy="64.8" r="34.2" fill="#000"/>
+    </mask>
+    <circle cx="512" cy="80" r="38" fill="#CBA754" mask="url(#cr5128038-12)"/>
+    <circle cx="535.56" cy="56.44" r="6.08" fill="#CBA754"/>
+  </g>
+  <text x="512" y="220" font-family="Amiri" font-weight="700" font-size="126" fill="#0B5C41" text-anchor="middle" direction="rtl">دعاء</text>
+  <text x="512" y="282" font-family="IBM Plex Sans Arabic" font-weight="500" font-size="29" fill="#CBA754" text-anchor="middle" letter-spacing="16" direction="ltr">DUAA</text>
+</svg>

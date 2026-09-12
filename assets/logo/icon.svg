@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" fill="#0B5C41"/>
+  <rect width="1024" height="1024" fill="url(#grain)"/>
+  
+  <g transform="rotate(-12 512 258)">
+    <mask id="cr51225892-12">
+      <circle cx="512" cy="258" r="92" fill="#fff"/>
+      <circle cx="548.8" cy="221.2" r="82.8" fill="#000"/>
+    </mask>
+    <circle cx="512" cy="258" r="92" fill="#CBA754" mask="url(#cr51225892-12)"/>
+    <circle cx="569.04" cy="200.96" r="14.72" fill="#CBA754"/>
+  </g>
+  <text x="512" y="618" font-family="Amiri" font-weight="700" font-size="310" fill="#F9F6EE" text-anchor="middle" direction="rtl">دعاء</text>
+  <line x1="366" y1="692" x2="658" y2="692" stroke="#CBA754" stroke-width="4" stroke-linecap="round"/>
+  <text x="512" y="776" font-family="IBM Plex Sans Arabic" font-weight="500" font-size="50" fill="#CBA754" text-anchor="middle" letter-spacing="26" direction="ltr">DUAA</text>
+</svg>

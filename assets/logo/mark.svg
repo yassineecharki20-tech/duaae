@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  
+  
+  <g transform="rotate(0 128 118)">
+    <mask id="cr128118620">
+      <circle cx="128" cy="118" r="62" fill="#fff"/>
+      <circle cx="152.8" cy="93.2" r="55.800000000000004" fill="#000"/>
+    </mask>
+    <circle cx="128" cy="118" r="62" fill="#0B5C41" mask="url(#cr128118620)"/>
+    <circle cx="166.44" cy="79.56" r="9.92" fill="#CBA754"/>
+  </g>
+  <text x="128" y="218" font-family="Amiri" font-weight="700" font-size="88" fill="#0B5C41" text-anchor="middle" direction="rtl">دعاء</text>
+</svg>
