@@ -76,7 +76,7 @@ export const ShareSheet = memo(function ShareSheet({ dua, visible, onDismiss }: 
         setBusy(null);
       }
     },
-    [dua, categoryTitle, theme.isDark, toast],
+    [dua, categoryTitle, theme.isDark, toast, t],
   );
 
   return (

@@ -104,7 +104,7 @@ export function AzkarSessionView({ sessionKey }: AzkarSessionViewProps) {
         toast.show(t('azkar.sessionDoneNamed', { title: category?.title ?? '' }), 'success');
       }
     },
-    [category?.title, counts, increment, isComplete, sessionKey, toast],
+    [category?.title, counts, increment, isComplete, sessionKey, toast, t],
   );
 
   const copy = useCallback(
@@ -117,7 +117,7 @@ export function AzkarSessionView({ sessionKey }: AzkarSessionViewProps) {
         toast.show(result.error.userMessage, 'error');
       }
     },
-    [toast],
+    [toast, t],
   );
 
   return (

@@ -22,11 +22,11 @@
 import { APP_LANGUAGES, DEFAULT_APP_LANGUAGE, type AppLanguage } from '@/core/types/domain';
 
 import { ar, type AnyMessageKey, type MessageCatalog, type MessageKey } from './messages/ar';
-
-export type { AnyMessageKey, MessageCatalog, MessageKey, PluralForm, PluralMessageKey } from './messages/ar';
 import { en } from './messages/en';
 import { fr } from './messages/fr';
 import { pluralForm } from './plurals';
+
+export type { AnyMessageKey, MessageCatalog, MessageKey, PluralForm, PluralMessageKey } from './messages/ar';
 
 /** Interpolation values for `{name}` placeholders. */
 export type MessageParams = Readonly<Record<string, string | number>>;

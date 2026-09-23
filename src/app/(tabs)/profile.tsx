@@ -55,7 +55,7 @@ export default function ProfileScreen() {
       return;
     }
     toast.show(t('profile.signedIn'), 'success');
-  }, [toast]);
+  }, [toast, t]);
 
   return (
     <Screen scroll edges={['top', 'left', 'right']} testID="profile-screen">

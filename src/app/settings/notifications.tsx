@@ -109,7 +109,7 @@ export default function NotificationsSettingsScreen() {
       setPermission('unavailable');
       toast.show(result.error.userMessage, 'error');
     }
-  }, [notifications, toast]);
+  }, [notifications, toast, t]);
 
   return (
     <Screen scroll testID="settings-notifications">

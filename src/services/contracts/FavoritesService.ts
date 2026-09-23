@@ -2,6 +2,13 @@ import type { FavoriteCollection, FavoriteEntry } from '@/core/types/domain';
 import type { Result } from '@/core/types/Result';
 
 /**
+ * Longest accepted collection name. Shared by the implementation that validates
+ * it and the UI that limits the field, so the two can never drift; the catalog
+ * message `favorites.collectionNameTooLong` states the same limit.
+ */
+export const MAX_COLLECTION_NAME = 30;
+
+/**
  * Favorites contract.
  *
  * `LocalFavoritesService` persists to device storage today. The Firebase stage

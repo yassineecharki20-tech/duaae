@@ -103,7 +103,7 @@ export default function SearchScreen() {
       removeRecent(term);
       toast.show(t('search.recentRemoved', { term }), 'info');
     },
-    [removeRecent, toast],
+    [removeRecent, toast, t],
   );
 
   const applyQuery = useCallback((value: string) => {

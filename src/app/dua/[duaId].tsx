@@ -78,7 +78,7 @@ export default function DuaDetailScreen() {
     } else {
       toast.show(result.error.userMessage, 'error');
     }
-  }, [dua, toast]);
+  }, [dua, toast, t]);
 
   if (!dua) {
     return (

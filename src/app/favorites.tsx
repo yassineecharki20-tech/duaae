@@ -19,7 +19,7 @@ import { Skeleton } from '@/components/ui/Progress';
 import { useToast } from '@/components/ui/Toast';
 
 import { selectFavoriteCollections, useFavoritesStore } from '@/store/favoritesStore';
-import { MAX_COLLECTION_NAME } from '@/services/impl/LocalFavoritesService';
+import { MAX_COLLECTION_NAME } from '@/services/contracts/FavoritesService';
 import { CATEGORY_BY_ID, DUA_BY_ID } from '@/data/content';
 import { toSearchKey } from '@/core/utils/arabic';
 import { localeTagFor } from '@/core/i18n/state';

@@ -5,13 +5,10 @@ import { StorageKeys } from '@/core/constants/storageKeys';
 import { translate } from '@/core/i18n/state';
 import type { FavoriteCollection, FavoriteEntry } from '@/core/types/domain';
 
-import type { FavoritesService } from '../contracts/FavoritesService';
+import { MAX_COLLECTION_NAME, type FavoritesService } from '../contracts/FavoritesService';
 import type { StorageService } from '../contracts/StorageService';
 
 const log = logger.child('favorites');
-
-/** Longest collection name accepted; the catalog message states the same limit. */
-export const MAX_COLLECTION_NAME = 30;
 
 /** Small unique id — no dependency, no collision risk at this scale. */
 function createCollectionId(): string {

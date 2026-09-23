@@ -64,7 +64,7 @@ export default function AccountSettingsScreen() {
         toast.show(result.error.userMessage, 'error');
       }
     },
-    [auth, toast],
+    [auth, toast, t],
   );
 
   const signOut = useCallback(async () => {
@@ -72,7 +72,7 @@ export default function AccountSettingsScreen() {
     const result = await auth.signOut();
     setBusy(false);
     toast.show(result.ok ? t('settings.account.signedOut') : result.error.userMessage, result.ok ? 'success' : 'error');
-  }, [auth, toast]);
+  }, [auth, toast, t]);
 
   const deleteAccount = useCallback(async () => {
     setBusy(true);
@@ -80,7 +80,7 @@ export default function AccountSettingsScreen() {
     setBusy(false);
     setConfirmDelete(false);
     toast.show(result.ok ? t('settings.account.deleted') : result.error.userMessage, result.ok ? 'success' : 'error');
-  }, [auth, toast]);
+  }, [auth, toast, t]);
 
   return (
     <Screen scroll testID="settings-account">

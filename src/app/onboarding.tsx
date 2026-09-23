@@ -82,7 +82,7 @@ export default function OnboardingScreen() {
         translate.setValue(target);
       }
     },
-    [translate, width, theme.reduceMotion],
+    [translate, width, theme.reduceMotion, slides.length],
   );
 
   const panResponder = useMemo(

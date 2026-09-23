@@ -88,7 +88,7 @@ export default function TasbeehScreen() {
       toast.show(t('tasbeeh.targetReached', { target }), 'success');
       void services.analytics().track({ name: AnalyticsEvents.tasbeehTargetReached, params: { target } });
     }
-  }, [increment, selectedDhikrId, target, toast]);
+  }, [increment, selectedDhikrId, target, toast, t]);
 
   const submitCustom = useCallback(async () => {
     const result = addCustomDhikr(customLabel);
@@ -100,7 +100,7 @@ export default function TasbeehScreen() {
     setCustomLabel('');
     setSheet(null);
     toast.show(t('tasbeeh.customAdded'), 'success');
-  }, [addCustomDhikr, customLabel, toast]);
+  }, [addCustomDhikr, customLabel, toast, t]);
 
   return (
     <Screen scroll edges={['top', 'left', 'right']} testID="tasbeeh-screen">

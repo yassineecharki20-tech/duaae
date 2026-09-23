@@ -47,7 +47,7 @@ export const FavoriteButton = memo(function FavoriteButton({
       result.isFavorite ? t('duas.favorite.added') : t('duas.favorite.removed'),
       result.isFavorite ? 'success' : 'info',
     );
-  }, [duaId, toggle, toast]);
+  }, [duaId, toggle, toast, t]);
 
   return (
     <IconButton

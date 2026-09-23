@@ -51,7 +51,7 @@ const RECENT_LIMIT = 3;
  */
 export default function HomeScreen() {
   const theme = useAppTheme();
-  const { t, tp } = useI18n();
+  const { t } = useI18n();
   const contentStatus = useContentStore((state) => state.status);
   const favoriteEntries = useFavoritesStore((state) => state.entries);
   const authUser = useAuthStore((state) => state.user);
