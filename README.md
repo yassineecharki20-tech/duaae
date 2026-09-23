@@ -1,13 +1,16 @@
 # DUAA | دعاء
 
-رفيقك اليومي للأدعية والأذكار والتسبيح — تطبيق عربيٌّ بالكامل، يعمل دون اتصال، ولا يعرض إلا
-نصوصًا موثَّقة المصدر.
+رفيقك اليومي للأدعية والأذكار والتسبيح — يعمل دون اتصال، ولا يعرض إلا نصوصًا موثَّقة المصدر.
+ثلاث لغات (العربية افتراضيًّا، والفرنسية، والإنجليزية) مع تبديلٍ تلقائي لاتجاه الواجهة، وثيمات
+وألوان وخطوط قابلة للتخصيص، وصفحة رئيسية ترتّبها كما تشاء، ومجموعات للمفضلة.
 
-An Arabic-first, offline-first duas & azkar companion: 147 sourced supplications across 12
-categories, morning/evening/sleep azkar sessions with real repeat counters, a tasbeeh counter with
-rounds and custom phrases, real local favourites, on-device search, text + generated-image sharing,
-light/dark themes from design tokens, full RTL, and accessibility treated as a requirement rather
-than an afterthought.
+An Arabic-first, offline-first duas & azkar companion in **three languages** (Arabic default, French,
+English) with automatic RTL/LTR: 147 sourced supplications across 12 categories, morning/evening/sleep
+azkar sessions with real repeat counters, a tasbeeh counter with rounds and custom phrases, favourites
+with named collections, search, filters and sorting, recently opened duas, a personalized home layout,
+8 calm themes × 8 contrast-checked accents × 4 typography profiles × 4 text sizes × 3 reading
+densities × 5 card styles, on-device search, text + generated-image sharing, and accessibility treated
+as a requirement rather than an afterthought.
 
 Built with Expo SDK 57, TypeScript (strict), expo-router, Zustand and a service layer that is ready
 for Firebase — **without a single line of Firebase in the app today**.
@@ -30,8 +33,8 @@ Quality gates:
 ```bash
 npm run typecheck              # tsc --noEmit, strict
 npm run lint                   # ESLint 9 flat config (expo preset + project rules)
-npm test                       # 147 tests across 12 suites (2 jest projects)
-npm run build:web              # static export → dist/ (29 routes)
+npm test                       # 222 tests across 16 suites (2 jest projects)
+npm run build:web              # static export → dist/ (32 routes)
 npm run assets:generate        # regenerate brand PNG/SVG + tasbeeh audio (deterministic)
 ```
 
@@ -57,8 +60,25 @@ daily progress and streaks, all persisted locally.
 **Tasbeeh** — tap-to-count dial with haptics + generated audio, per-phrase progress, configurable
 target, round completion and roll-over, five presets plus custom phrases you can add and remove.
 
-**Favourites** — real and persisted (`duaId` + `addedAt`), add/remove from the reader or from the
-favourites list, with an honest empty state when there are none.
+**Favourites & collections** — real and persisted (`duaId` + `addedAt` + `collectionIds`), add/remove
+from the reader or the list, organise into named collections (create, rename, delete — deleting a
+collection never deletes its duas), search inside the saved set, filter by collection or category, sort
+by recently added or by title, with honest empty states and honest "stored on this device" copy.
+
+**Recently opened** — the last 12 duas you opened, deduplicated, shown on the home screen.
+
+**Three languages** — Arabic (default, RTL), French and English (LTR). Every string lives in
+`src/core/i18n/messages/`, direction flips with the language instantly on web, and scripture stays
+Arabic in all three by content policy. See [`docs/I18N.md`](docs/I18N.md).
+
+**Personalization** — 8 calm palettes (default, emerald, midnight, sand, ocean, forest, rose,
+monochrome), 8 accent colours (all 128 palette × accent × scheme combinations meet WCAG AA),
+4 typography profiles over Arabic-first families, 4 text sizes, 3 reading densities, 5 dua card styles,
+high-readability mode, reduced motion — one persisted preferences object behind all of it. See
+[`docs/PERSONALIZATION.md`](docs/PERSONALIZATION.md).
+
+**Personalized home** — toggle and reorder the 8 home sections (daily dua, morning/evening adhkar,
+tasbeeh, favourites, recent, community, quick actions); the last visible section cannot be hidden.
 
 **Search** — instant, offline, Arabic-aware (normalises alef/hamza/ta-marbuta, ignores diacritics),
 ranked by match location, with category filters and a persisted recent-terms list you can prune.
@@ -69,10 +89,12 @@ ranked by match location, with category filters and a persisted recent-terms lis
 **Home & daily dua** — deterministic "dua of the day" (same day → same dua), greeting by time of day,
 shortcuts to the real destinations.
 
-**Settings** — appearance (theme, reading scale, motion, sound, haptics), notification *preferences*
-(stored locally; OS scheduling is honestly reported as not wired), language (Arabic shipped; English
-labelled "قريبًا"), account (reports that no auth backend is configured), about (version, sources,
-live backend-readiness matrix), privacy, terms, and a data reset behind a confirm sheet.
+**Settings** — 11 screens: hub, personalization (themes, accents, typography, sizes, density, card
+style, high readability), appearance (mode, motion, sound, haptics), home layout, language (ar · fr ·
+en), notification *preferences* (stored locally; OS scheduling is honestly reported as not wired),
+widget (preferences stored; the native widget is honestly reported as not shipped), account (reports
+that no auth backend is configured — no fake Google button), about (version, sources, live
+backend-readiness matrix), privacy, terms, and a data reset behind a confirm sheet.
 
 **Onboarding** — four swipeable slides with real copy and illustrations, completion stored locally;
 returning users are never shown it again.
@@ -80,8 +102,9 @@ returning users are never shown it again.
 **Deep links** — `duaa://` scheme plus web paths: `/dua/today`, `/azkar/morning`, `/azkar/evening`,
 `/tasbeeh`, `/category/[categoryId]`, `/dua/[duaId]`, `/favorites`, `/search`, `/settings/*`.
 
-**Community** — an honest empty state that renders the real `NOT_CONFIGURED` message. No fake posts,
-no fake authors, no fake login.
+**Community** — an honest empty state that renders the real `NOT_CONFIGURED` message:
+"المجتمع قريبًا" · "La communauté arrive bientôt." · "Community is coming soon." No fake posts, no fake
+authors, no fake publishing, no fake login.
 
 ---
 
@@ -89,7 +112,10 @@ no fake authors, no fake login.
 
 | Document | Contents |
 |---|---|
-| [`docs/STAGE-REPORT.md`](docs/STAGE-REPORT.md) | This stage's full report: structure, stack, run instructions, functional inventory, what is prepared for Firebase, manual configuration, environment limitations |
+| [`docs/STAGE-2-REPORT.md`](docs/STAGE-2-REPORT.md) | **Current stage report**: what is implemented, what needs external configuration, what is still under development, and what is ready for the Firebase/backend phase |
+| [`docs/I18N.md`](docs/I18N.md) | Translation architecture: catalogs and key typing, `useI18n()`, plurals (CLDR), RTL/LTR handling, content policy for translations, how to add a language |
+| [`docs/PERSONALIZATION.md`](docs/PERSONALIZATION.md) | The single `AppPreferences` object, theme composition, contrast guarantees, personalized home, collections, persistence vs. account sync |
+| [`docs/STAGE-REPORT.md`](docs/STAGE-REPORT.md) | Stage 1 report: structure, stack, run instructions, functional inventory, what is prepared for Firebase, manual configuration, environment limitations |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Layer map, service seam, content layer, state, design system, RTL, accessibility, testing strategy |
 | [`docs/FIREBASE-INTEGRATION.md`](docs/FIREBASE-INTEGRATION.md) | Step-by-step wiring plan for Auth / Google Sign-In / Firestore / FCM / Analytics / admin — against the contracts that already exist |
 | [`docs/CONTENT-POLICY.md`](docs/CONTENT-POLICY.md) | No-fabrication policy, source vocabulary, entry schema, the 20 integrity tests, change control |
@@ -101,14 +127,14 @@ no fake authors, no fake login.
 
 ```
 src/
-├── app/          27 route files (expo-router). Routes only — no business logic.
+├── app/          30 route files (expo-router) → 32 exported routes. Routes only — no business logic.
 ├── components/   UI kit, layout (AppHeader, BottomTabBar, AppErrorBoundary), feature components
 ├── features/     Search engine, share text/card, daily dua, user stats, community feed hook
-├── store/        9 Zustand stores (settings, onboarding, favourites, tasbeeh, azkar, search, …)
+├── store/        10 Zustand stores (settings/preferences, onboarding, favourites, recent duas, tasbeeh, azkar, search, …)
 ├── services/     contracts/ (13 interfaces) · impl/ (13 implementations) · registry.ts
 ├── data/         Bundled authentic corpus + tasbeeh presets
-├── design/       tokens/ · theme/ · rtl/
-├── core/         config/env · errors · utils (Arabic, dates, logger) · constants · a11y · types
+├── design/       tokens/ (colour math, palettes, typography, spacing) · theme/ · rtl/
+├── core/         config/env · i18n (catalogs + runtime + RTL) · errors · utils (Arabic, dates, logger) · constants · a11y · types
 └── hooks/        useReducedMotion, useIsRTL
 assets/           fonts (Amiri, IBM Plex Sans Arabic) · images · logo (SVG) · audio (generated WAV)
 tests/            logic project (Node) + app-web project (jsdom, real screens)
