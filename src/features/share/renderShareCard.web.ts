@@ -9,6 +9,7 @@
  */
 
 import type { Dua } from '@/core/types/domain';
+import { translate } from '@/core/i18n/state';
 import { CARD_WIDTH, computeShareCardLayout, type ShareCardLayout } from './shareCardLayout';
 
 export interface RenderedCard {
@@ -124,7 +125,7 @@ function drawHeader(ctx: CanvasRenderingContext2D, layout: ShareCardLayout): voi
 
   ctx.fillStyle = palette.ink;
   ctx.font = '700 104px Amiri, "Noto Naskh Arabic", serif';
-  ctx.fillText('دعاء', layout.width / 2, 320);
+  ctx.fillText(translate('share.cardTitle'), layout.width / 2, 320);
 
   ctx.strokeStyle = palette.gold;
   ctx.lineWidth = 3;
@@ -155,13 +156,15 @@ function drawFooter(ctx: CanvasRenderingContext2D, dua: Dua, layout: ShareCardLa
 
   const sourceText =
     dua.sources.length > 0
-      ? `المصدر: ${dua.sources
-          .map((source) =>
-            source.quran
-              ? `${source.book} — ${source.quran.surah} ${source.quran.ayah}`
-              : `${source.book}${source.number ? ` ${source.number}` : ''}`,
-          )
-          .join(' · ')}`
+      ? translate('duas.source.label', {
+          text: dua.sources
+            .map((source) =>
+              source.quran
+                ? `${source.book} — ${source.quran.surah} ${source.quran.ayah}`
+                : `${source.book}${source.number ? ` ${source.number}` : ''}`,
+            )
+            .join(' · '),
+        })
       : null;
 
   if (sourceText) {
@@ -184,7 +187,7 @@ function drawFooter(ctx: CanvasRenderingContext2D, dua: Dua, layout: ShareCardLa
   drawCrescent(ctx, layout.width / 2 - 92, brandY - 10, 14, palette.gold, palette.background);
   ctx.fillStyle = palette.gold;
   ctx.font = '500 30px "IBM Plex Sans Arabic", sans-serif';
-  ctx.fillText('دعاء — رفيقك اليومي للذكر', layout.width / 2 + 26, brandY);
+  ctx.fillText(translate('share.cardTagline'), layout.width / 2 + 26, brandY);
 }
 
 function roundRect(

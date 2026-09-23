@@ -15,6 +15,8 @@
  * service reports `NOT_CONFIGURED` instead of pretending to work.
  */
 
+import { translate } from '@/core/i18n/state';
+
 export type AppEnvironment = 'development' | 'preview' | 'production';
 
 function read(key: string): string | undefined {
@@ -83,7 +85,7 @@ function buildConfig(): AppConfig {
   return Object.freeze({
     environment,
     isProduction: environment === 'production',
-    appName: read('EXPO_PUBLIC_APP_NAME') ?? 'DUAA | دعاء',
+    appName: read('EXPO_PUBLIC_APP_NAME') ?? translate('app.nameFull'),
     appSlug: 'duaa',
     supportEmail: read('EXPO_PUBLIC_SUPPORT_EMAIL') ?? 'support@duaa.app',
     privacyPolicyUrl: read('EXPO_PUBLIC_PRIVACY_POLICY_URL') ?? 'https://duaa.app/legal/privacy',

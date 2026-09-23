@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import { Screen } from '@/components/ui/Screen';
 import { AppText } from '@/components/ui/AppText';
 import { useDailyDua } from '@/features/home/useDailyDua';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 /**
  * Deep link: /dua/today — resolves the deterministic daily dua for the local
@@ -11,6 +12,7 @@ import { useDailyDua } from '@/features/home/useDailyDua';
  * the same text as the home card.
  */
 export default function TodayDuaRoute() {
+  const { t } = useI18n();
   const { dailyDua, loading } = useDailyDua();
 
   useEffect(() => {
@@ -19,7 +21,7 @@ export default function TodayDuaRoute() {
 
   return (
     <Screen>
-      <AppText tone="muted">{loading ? 'جارٍ تحضير دعاء اليوم…' : 'جارٍ فتح الدعاء…'}</AppText>
+      <AppText tone="muted">{loading ? t('reader.today.preparing') : t('reader.today.opening')}</AppText>
     </Screen>
   );
 }

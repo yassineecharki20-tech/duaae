@@ -10,6 +10,7 @@ import type { DeviceFeedbackService, HapticKind, SoundKind } from '../contracts/
 
 import tickAsset from '@/assets/audio/tick.wav';
 import chimeAsset from '@/assets/audio/chime.wav';
+import { translate } from '@/core/i18n/state';
 
 const log = logger.child('feedback');
 
@@ -63,7 +64,7 @@ export class ExpoDeviceFeedbackService implements DeviceFeedbackService {
       return ok(undefined);
     } catch (cause) {
       log.warn(`haptic ${kind} failed`, cause);
-      return err(AppError.unsupported('الاهتزاز', String(cause)));
+      return err(AppError.unsupported(translate('error.feature.haptics'), String(cause)));
     }
   }
 

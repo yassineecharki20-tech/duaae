@@ -8,6 +8,7 @@ import type { Dua } from '@/core/types/domain';
 import { buildShareText } from '@/features/share/shareText';
 import { renderShareCard, type RenderedCard } from '@/features/share/renderShareCard';
 import { CATEGORY_BY_ID, DUA_BY_ID } from '@/data/content';
+import { translate } from '@/core/i18n/state';
 
 import type { ClipboardService } from '../contracts/ClipboardService';
 import type {
@@ -39,7 +40,7 @@ export class UniversalShareService implements ShareService {
 
   async shareAsText(dua: Dua): Promise<Result<ShareOutcome>> {
     const message = buildShareText(dua, { categoryTitle: this.categoryTitle(dua) });
-    return this.shareText(dua.title ?? 'دعاء', message);
+    return this.shareText(dua.title ?? translate('app.name'), message);
   }
 
   async shareText(title: string, message: string, url?: string): Promise<Result<ShareOutcome>> {
@@ -49,13 +50,13 @@ export class UniversalShareService implements ShareService {
       }
       const result = await Share.share({ message, title }, { dialogTitle: title });
       if (result.action === Share.sharedAction) {
-        return ok({ status: 'shared', message: 'تمت المشاركة بنجاح.' });
+        return ok({ status: 'shared', message: translate('share.success') });
       }
-      return ok({ status: 'cancelled', message: 'تم إلغاء المشاركة.' });
+      return ok({ status: 'cancelled', message: translate('share.cancelled') });
     } catch (cause) {
       const error = String(cause);
       if (error.includes('CANCEL') || error.includes('cancel')) {
-        return ok({ status: 'cancelled', message: 'تم إلغاء المشاركة.' });
+        return ok({ status: 'cancelled', message: translate('share.cancelled') });
       }
       log.error('shareText failed', cause);
       return err(AppError.from(cause, 'share.shareText'));
@@ -71,11 +72,11 @@ export class UniversalShareService implements ShareService {
     if (typeof nav.share === 'function') {
       try {
         await nav.share({ title, text: message, url });
-        return ok({ status: 'shared', message: 'تمت المشاركة بنجاح.' });
+        return ok({ status: 'shared', message: translate('share.success') });
       } catch (cause) {
         const name = (cause as DOMException | undefined)?.name;
         if (name === 'AbortError') {
-          return ok({ status: 'cancelled', message: 'تم إلغاء المشاركة.' });
+          return ok({ status: 'cancelled', message: translate('share.cancelled') });
         }
         log.warn('navigator.share failed, falling back to clipboard', cause);
       }
@@ -83,7 +84,7 @@ export class UniversalShareService implements ShareService {
 
     const copied = await this.clipboard.copy(message);
     if (!copied.ok) return err(copied.error);
-    return ok({ status: 'copied', message: 'تم نسخ النص — يمكنك لصقه في أي تطبيق.' });
+    return ok({ status: 'copied', message: translate('share.copiedToClipboard') });
   }
 
   async renderCard(dua: Dua, options: ShareCardOptions = {}): Promise<Result<ShareCard>> {
@@ -131,14 +132,14 @@ export class UniversalShareService implements ShareService {
       // Native: system share sheet with the PNG file.
       const Sharing = await import('expo-sharing');
       if (!(await Sharing.isAvailableAsync())) {
-        return err(AppError.unsupported('مشاركة الصور'));
+        return err(AppError.unsupported(translate('error.feature.sharing')));
       }
       await Sharing.shareAsync(card.data.filePath ?? card.data.uri, {
         mimeType: 'image/png',
-        dialogTitle: 'مشاركة بطاقة دعاء',
+        dialogTitle: translate('share.dialogTitle'),
         UTI: 'public.png',
       });
-      return ok({ status: 'shared', message: 'تمت مشاركة البطاقة.' });
+      return ok({ status: 'shared', message: translate('share.cardShared') });
     } catch (cause) {
       log.error('shareAsCard failed', cause);
       return err(AppError.from(cause, 'share.shareAsCard'));
@@ -154,14 +155,14 @@ export class UniversalShareService implements ShareService {
 
     if (blob && typeof nav.share === 'function' && typeof nav.canShare === 'function') {
       const file = new File([blob], 'duaa-card.png', { type: 'image/png' });
-      const payload: ShareData = { files: [file], title: 'دعاء' };
+      const payload: ShareData = { files: [file], title: translate('app.name') };
       if (nav.canShare(payload)) {
         try {
           await nav.share(payload);
-          return ok({ status: 'shared', message: 'تمت مشاركة البطاقة.' });
+          return ok({ status: 'shared', message: translate('share.cardShared') });
         } catch (cause) {
           if ((cause as DOMException | undefined)?.name === 'AbortError') {
-            return ok({ status: 'cancelled', message: 'تم إلغاء المشاركة.' });
+            return ok({ status: 'cancelled', message: translate('share.cancelled') });
           }
           log.warn('navigator.share(file) failed, saving instead', cause);
         }
@@ -171,9 +172,9 @@ export class UniversalShareService implements ShareService {
     // Fallback: download the artwork.
     if (blob) {
       downloadBlob(blob, 'duaa-card.png');
-      return ok({ status: 'saved', message: 'تم حفظ البطاقة في التنزيلات.' });
+      return ok({ status: 'saved', message: translate('share.cardSavedDownloads') });
     }
-    return err(AppError.unsupported('حفظ البطاقة', 'canvas export unavailable'));
+    return err(AppError.unsupported(translate('error.feature.saveCard'), 'canvas export unavailable'));
   }
 
   async saveCard(dua: Dua, options: ShareCardOptions = {}): Promise<Result<ShareOutcome>> {
@@ -183,9 +184,9 @@ export class UniversalShareService implements ShareService {
     try {
       if (Platform.OS === 'web') {
         const blob = dataUriToBlob(card.data.uri);
-        if (!blob) return err(AppError.unsupported('حفظ البطاقة'));
+        if (!blob) return err(AppError.unsupported(translate('error.feature.saveCard')));
         downloadBlob(blob, `duaa-${dua.id}.png`);
-        return ok({ status: 'saved', message: 'تم حفظ البطاقة في التنزيلات.' });
+        return ok({ status: 'saved', message: translate('share.cardSavedDownloads') });
       }
 
       const { File, Paths } = await import('expo-file-system');
@@ -194,9 +195,9 @@ export class UniversalShareService implements ShareService {
       source.copy(destination);
       const exists = destination.exists ?? false;
       if (!exists) {
-        return err(AppError.storage('لم يكتمل حفظ البطاقة.'));
+        return err(AppError.storage(translate('share.cardSaveIncomplete')));
       }
-      return ok({ status: 'saved', message: 'تم حفظ البطاقة في ملفات التطبيق.' });
+      return ok({ status: 'saved', message: translate('share.cardSavedAppFiles') });
     } catch (cause) {
       log.error('saveCard failed', cause);
       return err(AppError.from(cause, 'share.saveCard'));
@@ -257,6 +258,6 @@ export async function shareDuaTextById(
   duaId: string,
 ): Promise<Result<ShareOutcome>> {
   const dua = DUA_BY_ID.get(duaId);
-  if (!dua) return err(AppError.notFound('الدعاء'));
+  if (!dua) return err(AppError.notFound(translate('error.feature.dua')));
   return service.shareAsText(dua);
 }

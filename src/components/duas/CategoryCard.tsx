@@ -5,6 +5,7 @@ import { router } from 'expo-router';
 
 import type { DuaCategory } from '@/core/types/domain';
 import { useAppTheme } from '@/design/theme/ThemeProvider';
+import { useI18n } from '@/core/i18n/I18nProvider';
 import { AppText } from '@/components/ui/AppText';
 import { Card } from '@/components/ui/Card';
 
@@ -16,12 +17,13 @@ export interface CategoryCardProps {
 /** Category entry point. The count is real, computed from the corpus. */
 export const CategoryCard = memo(function CategoryCard({ category, testID }: CategoryCardProps) {
   const theme = useAppTheme();
+  const { t, tp } = useI18n();
   const isSession = category.kind === 'session';
 
   return (
     <Card
       onPress={() => router.push(`/category/${category.id}`)}
-      accessibilityLabel={`${category.title}. ${category.itemCount ?? 0} عنصرًا`}
+      accessibilityLabel={t('category.a11y.card', { title: category.title, count: category.itemCount ?? 0 })}
       padding={theme.spacing.lg}
       variant={isSession ? 'primary' : 'surface'}
       testID={testID}
@@ -68,7 +70,7 @@ export const CategoryCard = memo(function CategoryCard({ category, testID }: Cat
               fontSize: 12,
             }}
           >
-            {category.itemCount ?? 0} ذكرًا
+            {tp('category.itemsValue', category.itemCount ?? 0)}
           </AppText>
           <Ionicons
             name="chevron-back"

@@ -3,6 +3,7 @@ import { err, type Result } from '@/core/types/Result';
 import { logger } from '@/core/utils/logger';
 import { missingFirebaseVariables } from '@/core/config/env';
 import type { CommunityPost, ReportPayload } from '@/core/types/domain';
+import { translate } from '@/core/i18n/state';
 
 import type {
   CommunityAuthorProfile,
@@ -31,7 +32,7 @@ export class UnavailableCommunityService implements CommunityService {
     log.info(`${operation} requested while the community backend is unconfigured`);
     return err(
       AppError.notConfigured(
-        'المجتمع',
+        translate('community.screenTitle'),
         `CommunityService.${operation} needs Firestore. Missing env: ${missingFirebaseVariables().join(', ') || 'none'}`,
       ),
     );
@@ -93,7 +94,7 @@ export class UnavailableCommunityService implements CommunityService {
   }
 
   onFeedChange(_listener: (page: FeedPage) => void, onError: (error: unknown) => void): () => void {
-    onError(AppError.notConfigured('المجتمع', 'onFeedChange has no backend to subscribe to.'));
+    onError(AppError.notConfigured(translate('community.screenTitle'), 'onFeedChange has no backend to subscribe to.'));
     return () => undefined;
   }
 }

@@ -20,9 +20,12 @@ import { ShareSheet } from '@/components/share/ShareSheet';
 import { CATEGORY_BY_ID, DUAS_BY_CATEGORY, DUA_BY_ID } from '@/data/content';
 import { services } from '@/services/registry';
 import { useSettingsStore } from '@/store/settingsStore';
-import { readingScaleOptions, type ReadingScale } from '@/design/tokens/typography';
+import { useRecentDuasStore } from '@/store/recentDuasStore';
+import { type ReadingScale } from '@/design/tokens/typography';
+import { textSizeOptions } from '@/core/i18n/options';
 import { AnalyticsEvents } from '@/services/contracts/AnalyticsService';
 import { useToast } from '@/components/ui/Toast';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 /**
  * Dua reader.
@@ -33,6 +36,7 @@ import { useToast } from '@/components/ui/Toast';
  */
 export default function DuaDetailScreen() {
   const theme = useAppTheme();
+  const { t, tp } = useI18n();
   const params = useLocalSearchParams<{ duaId: string }>();
   const toast = useToast();
   const [fontSheet, setFontSheet] = useState(false);
@@ -42,6 +46,7 @@ export default function DuaDetailScreen() {
   const category = dua ? CATEGORY_BY_ID.get(dua.categoryId) : undefined;
   const readingScale = useSettingsStore((state) => state.preferences.readingScale);
   const setReadingScale = useSettingsStore((state) => state.setReadingScale);
+  const recordRecent = useRecentDuasStore((state) => state.record);
 
   const neighbours = useMemo(() => {
     if (!dua) return { previous: null as string | null, next: null as string | null };
@@ -56,17 +61,19 @@ export default function DuaDetailScreen() {
 
   useEffect(() => {
     if (dua) {
+      // Local reading history — powers the "recent" home section.
+      recordRecent(dua.id);
       void services
         .analytics()
         .track({ name: AnalyticsEvents.duaViewed, params: { duaId: dua.id, category: dua.categoryId } });
     }
-  }, [dua]);
+  }, [dua, recordRecent]);
 
   const copy = useCallback(async () => {
     if (!dua) return;
     const result = await services.clipboard().copy(dua.text);
     if (result.ok) {
-      toast.show('تم نسخ الدعاء', 'success');
+      toast.show(t('reader.copied'), 'success');
       void services.analytics().track({ name: AnalyticsEvents.duaCopied, params: { duaId: dua.id } });
     } else {
       toast.show(result.error.userMessage, 'error');
@@ -76,12 +83,12 @@ export default function DuaDetailScreen() {
   if (!dua) {
     return (
       <Screen>
-        <AppHeader title="الدعاء" />
+        <AppHeader title={t('error.feature.dua')} />
         <EmptyState
           icon="help-circle-outline"
-          title="لم يتم العثور على الدعاء"
-          description="ربما تغيّر المعرّف أو حُذف النص."
-          actionLabel="العودة إلى الأدعية"
+          title={t('reader.notFoundTitle')}
+          description={t('reader.notFoundBody')}
+          actionLabel={t('category.backToDuas')}
           onAction={() => router.replace('/duas')}
         />
       </Screen>
@@ -92,23 +99,23 @@ export default function DuaDetailScreen() {
     <Screen scroll testID={`dua-${dua.id}`}>
       <View style={{ marginHorizontal: -theme.layout.screenGutter }}>
         <AppHeader
-          title={dua.title ?? category?.title ?? 'دعاء'}
+          title={dua.title ?? category?.title ?? t('app.name')}
           subtitle={category?.title}
           actions={
             <>
               <IconButton
                 icon="text-outline"
-                accessibilityLabel="حجم الخط"
+                accessibilityLabel={t('reader.textSize')}
                 onPress={() => setFontSheet(true)}
               />
               <IconButton
                 icon="copy-outline"
-                accessibilityLabel="نسخ الدعاء"
+                accessibilityLabel={t('reader.copy')}
                 onPress={() => void copy()}
               />
               <IconButton
                 icon="share-social-outline"
-                accessibilityLabel="مشاركة الدعاء"
+                accessibilityLabel={t('reader.share')}
                 onPress={() => setShareSheet(true)}
               />
             </>
@@ -124,7 +131,7 @@ export default function DuaDetailScreen() {
                 <AppText variant="scriptureTitle" align="center">
                   ﴿ {dua.title} ﴾
                 </AppText>
-                {dua.repeat > 1 ? <Chip label={`يُقال ${dua.repeat} مرات`} tone="gold" /> : null}
+                {dua.repeat > 1 ? <Chip label={tp('duas.repeatTimes', dua.repeat)} tone="gold" /> : null}
               </View>
             ) : null}
 
@@ -148,7 +155,7 @@ export default function DuaDetailScreen() {
 
             <View style={{ gap: theme.spacing.xs }}>
               <AppText weight="semiBold" tone="muted" style={{ fontSize: 12 }}>
-                المصدر
+                {t('duas.source.title')}
               </AppText>
               {dua.sources.map((source, index) => (
                 <AppText key={index} tone="subtle" style={{ fontSize: 12.5, lineHeight: 20 }}>
@@ -170,16 +177,16 @@ export default function DuaDetailScreen() {
               variant="outline"
               size="md"
               disabled={!neighbours.previous}
-              accessibilityLabel="الدعاء السابق"
-              onPress={() => neighbours.previous && router.setParams({ duaId: neighbours.previous })} label="السابق" />
+              accessibilityLabel={t('reader.previousDua')}
+              onPress={() => neighbours.previous && router.setParams({ duaId: neighbours.previous })} label={t('common.previous')} />
           </View>
           <View style={{ flex: 1 }}>
             <Button
               variant="outline"
               size="md"
               disabled={!neighbours.next}
-              accessibilityLabel="الدعاء التالي"
-              onPress={() => neighbours.next && router.setParams({ duaId: neighbours.next })} label="التالي" />
+              accessibilityLabel={t('reader.nextDua')}
+              onPress={() => neighbours.next && router.setParams({ duaId: neighbours.next })} label={t('common.next')} />
           </View>
         </View>
       </View>
@@ -187,16 +194,16 @@ export default function DuaDetailScreen() {
       <BottomSheet
         visible={fontSheet}
         onDismiss={() => setFontSheet(false)}
-        title="حجم خط المصحف"
-        subtitle="يُحفظ اختيارك لكل الأدعية"
+        title={t('reader.textSizeSheetTitle')}
+        subtitle={t('reader.textSizeSheetSubtitle')}
         scrollable={false}
       >
         <View style={{ gap: theme.spacing.lg, paddingBottom: theme.spacing.lg }}>
           <Segmented
-            options={readingScaleOptions.map((option) => ({ value: option.value, label: option.label }))}
+            options={textSizeOptions(t)}
             value={readingScale}
             onChange={(value) => setReadingScale(value as ReadingScale)}
-            accessibilityLabel="حجم خط قراءة الأدعية"
+            accessibilityLabel={t('reader.textSizeA11y')}
           />
           <AppText variant="scripture" align="center">
             {dua.text.split('\n')[0]}

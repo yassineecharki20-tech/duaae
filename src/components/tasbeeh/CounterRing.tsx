@@ -7,6 +7,7 @@ import { AppText } from '@/components/ui/AppText';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 import { a11yState } from '@/core/a11y/stateProps';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 export interface CounterRingProps {
   value: number;
@@ -38,6 +39,7 @@ export function CounterRing({
   disabled,
 }: CounterRingProps) {
   const theme = useAppTheme();
+  const { t } = useI18n();
   const reducedMotion = useReducedMotion();
   const [animatedProgress] = useState(
     () => new Animated.Value(target > 0 ? Math.min(value / target, 1) : 0),
@@ -69,8 +71,8 @@ export function CounterRing({
     <View style={{ alignItems: 'center', gap: theme.spacing.lg }}>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={`عداد التسبيح — ${value} من ${target}`}
-        accessibilityHint="اضغط لزيادة العدّاد"
+        accessibilityLabel={t('tasbeeh.a11y.counter', { value, target })}
+        accessibilityHint={t('tasbeeh.a11y.counterHint')}
         {...a11yState({ disabled: Boolean(disabled) })}
         disabled={disabled}
         onPress={onPress}
@@ -121,7 +123,7 @@ export function CounterRing({
             {value}
           </AppText>
           <AppText tone="subtle" style={{ fontSize: 12 }} accessibilityElementsHidden>
-            من {target}
+            {t('tasbeeh.ofTarget', { target })}
           </AppText>
         </View>
       </Pressable>

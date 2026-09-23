@@ -5,10 +5,12 @@ import { Ionicons } from '@expo/vector-icons';
 import type { SourceReference } from '@/core/types/domain';
 import { useAppTheme } from '@/design/theme/ThemeProvider';
 import { AppText } from '@/components/ui/AppText';
+import { useI18n } from '@/core/i18n/I18nProvider';
+import { translate, translatePlural } from '@/core/i18n/state';
 
 export function formatSourceReference(reference: SourceReference): string {
   if (reference.quran) {
-    return `سورة ${reference.quran.surah}، الآية ${reference.quran.ayah}`;
+    return translate('duas.source.quran', { surah: reference.quran.surah, ayah: reference.quran.ayah });
   }
   const parts = [reference.book];
   if (reference.number) parts.push(`(${reference.number})`);
@@ -30,17 +32,18 @@ export const SourceLine = memo(function SourceLine({
   compact?: boolean;
 }) {
   const theme = useAppTheme();
+  const { t } = useI18n();
   if (sources.length === 0 && (!repeat || repeat <= 1)) return null;
 
   const text = [
     sources.length > 0 ? sources.map(formatSourceReference).join(' · ') : null,
-    repeat && repeat > 1 ? `يُقال ${repeat} مرات` : null,
+    repeat && repeat > 1 ? translatePlural('duas.repeatTimes', repeat) : null,
   ]
     .filter(Boolean)
     .join(' — ');
 
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing.xs }} accessibilityLabel={`المصدر: ${text}`}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing.xs }} accessibilityLabel={t('duas.source.label', { text })}>
       <Ionicons name="book-outline" size={compact ? 12 : 14} color={theme.colors.textSubtle} />
       <AppText
         tone="subtle"

@@ -22,6 +22,7 @@ import { useToast } from '@/components/ui/Toast';
 import { useUserProfile } from '@/features/user/useUserProfile';
 import { useAuthStore } from '@/store/authStore';
 import { services } from '@/services/registry';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 /**
  * حسابي.
@@ -33,6 +34,7 @@ import { services } from '@/services/registry';
  */
 export default function ProfileScreen() {
   const theme = useAppTheme();
+  const { t } = useI18n();
   const toast = useToast();
   const { profile, stats, loading, saveDisplayName } = useUserProfile();
   const authStatus = useAuthStore((state) => state.status);
@@ -44,7 +46,7 @@ export default function ProfileScreen() {
   const [saving, setSaving] = useState(false);
 
   const displayName = profile?.displayName?.trim();
-  const initials = displayName ? displayName.charAt(0) : 'د';
+  const initials = displayName ? displayName.charAt(0) : t('profile.avatarInitial');
 
   const signInWithGoogle = useCallback(async () => {
     const result = await services.auth().signInWithProvider('google');
@@ -52,19 +54,19 @@ export default function ProfileScreen() {
       toast.show(result.error.userMessage, 'error');
       return;
     }
-    toast.show('تم تسجيل الدخول', 'success');
+    toast.show(t('profile.signedIn'), 'success');
   }, [toast]);
 
   return (
     <Screen scroll edges={['top', 'left', 'right']} testID="profile-screen">
       <View style={{ marginHorizontal: -theme.layout.screenGutter }}>
         <AppHeader
-          title="حسابي"
+          title={t('nav.tab.profile')}
           canGoBack={false}
           actions={
             <IconButton
               icon="settings-outline"
-              accessibilityLabel="الإعدادات"
+              accessibilityLabel={t('profile.settings')}
               onPress={() => router.push('/settings')}
             />
           }
@@ -96,19 +98,19 @@ export default function ProfileScreen() {
               {loading ? (
                 <Skeleton width={120} height={18} />
               ) : (
-                <AppText variant="heading">{displayName || 'ضيف دعاء'}</AppText>
+                <AppText variant="heading">{displayName || t('profile.guestName')}</AppText>
               )}
               <AppText tone="subtle" style={{ fontSize: 12 }}>
                 {authStatus === 'authenticated' && authUser?.email
                   ? authUser.email
-                  : 'الملف محفوظ على جهازك فقط'}
+                  : t('profile.guestNote')}
               </AppText>
             </View>
             <Button
               variant="outline"
               size="sm"
-              label="تعديل الاسم"
-              accessibilityLabel="تعديل الاسم"
+              label={t('profile.editName')}
+              accessibilityLabel={t('profile.editName')}
               onPress={() => {
                 setDraftName(displayName ?? '');
                 setEditing(true);
@@ -119,33 +121,33 @@ export default function ProfileScreen() {
 
         {/* Stats */}
         <View style={{ gap: theme.spacing.md }}>
-          <AppText variant="heading">إحصاءاتك</AppText>
+          <AppText variant="heading">{t('profile.yourStats')}</AppText>
           <View style={{ flexDirection: 'row', gap: theme.spacing.md }}>
-            <StatCard label="المفضلة" value={stats?.favoriteCount} icon="heart-outline" />
-            <StatCard label="تسبيحات" value={stats?.tasbeehTotal} icon="repeat-outline" />
-            <StatCard label="جلسات مكتملة" value={stats?.azkarSessionsCompleted} icon="checkmark-circle-outline" />
+            <StatCard label={t('profile.stat.favorites')} value={stats?.favoriteCount} icon="heart-outline" />
+            <StatCard label={t('profile.stat.tasbeeh')} value={stats?.tasbeehTotal} icon="repeat-outline" />
+            <StatCard label={t('profile.stat.sessions')} value={stats?.azkarSessionsCompleted} icon="checkmark-circle-outline" />
           </View>
           <View style={{ flexDirection: 'row', gap: theme.spacing.sm, flexWrap: 'wrap' }}>
-            <Chip icon="flame-outline" label={`تتابع حالي: ${stats?.currentStreakDays ?? 0} يوم`} />
-            <Chip icon="trophy-outline" label={`أطول تتابع: ${stats?.longestStreakDays ?? 0} يوم`} />
+            <Chip icon="flame-outline" label={t('profile.currentStreakValue', { count: stats?.currentStreakDays ?? 0 })} />
+            <Chip icon="trophy-outline" label={t('profile.longestStreakValue', { count: stats?.longestStreakDays ?? 0 })} />
           </View>
         </View>
 
         {/* Account */}
-        <SettingsSection title="الحساب">
+        <SettingsSection title={t('profile.accountSection')}>
           {isConfigured ? (
             authStatus === 'authenticated' ? (
               <SettingsRow
                 icon="person-circle-outline"
-                title={authUser?.email ?? 'حساب مرتبط'}
-                subtitle="مسجّل الدخول"
+                title={authUser?.email ?? t('profile.accountLinked')}
+                subtitle={t('settings.account.signedInState')}
                 onPress={() => router.push('/settings/account')}
               />
             ) : (
               <SettingsRow
                 icon="logo-google"
-                title="تسجيل الدخول بـ Google"
-                subtitle="لمزامنة المفضلة والتسبيح"
+                title={t('profile.signInGoogle')}
+                subtitle={t('profile.signInGoogleNote')}
                 onPress={() => void signInWithGoogle()}
               />
             )
@@ -160,13 +162,12 @@ export default function ProfileScreen() {
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing.sm }}>
                 <Ionicons name="cloud-offline-outline" size={16} color={theme.colors.textMuted} />
                 <AppText weight="medium" style={{ fontSize: 13.5 }}>
-                  تسجيل الدخول غير مُفعّل بعد
+                  {t('profile.signInNotEnabled')}
                 </AppText>
                 <FutureTag />
               </View>
               <AppText tone="muted" style={{ fontSize: 12.5, lineHeight: 20 }}>
-                خدمة الحساب جاهزة في الكود لكنها تنتظر ربط Firebase Auth. حتى ذلك الحين يبقى ملفك
-                وإحصاءاتك ومفضلتك محفوظة على هذا الجهاز فقط — ولن يعرض التطبيق زر دخول وهميًا.
+                {t('profile.accountReadyNote')}
               </AppText>
               <AppText
                 tone="primary"
@@ -174,16 +175,16 @@ export default function ProfileScreen() {
                 style={{ fontSize: 12.5 }}
                 onPress={() => router.push('/settings/account')}
                 accessibilityRole="button"
-                accessibilityLabel="تفاصيل الحساب"
+                accessibilityLabel={t('profile.accountDetails')}
               >
-                التفاصيل ←
+                {t('profile.detailsArrow')}
               </AppText>
             </View>
           )}
           <SettingsRow
             icon="settings-outline"
-            title="الإعدادات"
-            subtitle="المظهر، التذكيرات، اللغة"
+            title={t('profile.settings')}
+            subtitle={t('profile.settingsNote')}
             onPress={() => {
               void services.analytics().screen('settings');
               router.push('/settings');
@@ -194,7 +195,7 @@ export default function ProfileScreen() {
         <View style={{ alignItems: 'center', gap: theme.spacing.sm }}>
           <DuaaMark size={28} />
           <AppText tone="subtle" style={{ fontSize: 11.5 }}>
-            دعاء — يعمل دون إنترنت، بلا إعلانات، بلا تتبع.
+            {t('profile.appSubtitle')}
           </AppText>
         </View>
       </View>
@@ -202,27 +203,27 @@ export default function ProfileScreen() {
       <BottomSheet
         visible={editing}
         onDismiss={() => setEditing(false)}
-        title="اسمك في دعاء"
-        subtitle="يُحفظ على جهازك ويظهر في الترحيب"
+        title={t('profile.editNameTitle')}
+        subtitle={t('profile.editNameSubtitle')}
         scrollable={false}
       >
         <View style={{ gap: theme.spacing.lg, paddingBottom: theme.spacing.xl }}>
           <TextField
             value={draftName}
             onChangeText={setDraftName}
-            label="الاسم"
-            placeholder="مثال: أبو يوسف"
+            label={t('profile.nameField')}
+            placeholder={t('profile.namePlaceholder')}
             maxLength={40}
             autoFocus
-            accessibilityLabel="اسمك في دعاء"
+            accessibilityLabel={t('profile.editNameTitle')}
           />
           <View style={{ flexDirection: 'row', gap: theme.spacing.sm }}>
             <View style={{ flex: 1 }}>
               <Button
                 variant="ghost"
                 fullWidth
-                label="إلغاء"
-                accessibilityLabel="إلغاء"
+                label={t('common.cancel')}
+                accessibilityLabel={t('common.cancel')}
                 onPress={() => setEditing(false)}
               />
             </View>
@@ -230,17 +231,17 @@ export default function ProfileScreen() {
               <Button
                 fullWidth
                 loading={saving}
-                label="حفظ"
-                accessibilityLabel="حفظ الاسم"
+                label={t('common.save')}
+                accessibilityLabel={t('profile.saveName')}
                 onPress={async () => {
                   setSaving(true);
                   const saved = await saveDisplayName(draftName);
                   setSaving(false);
                   if (saved) {
                     setEditing(false);
-                    toast.show('تم تحديث الاسم', 'success');
+                    toast.show(t('profile.nameUpdated'), 'success');
                   } else {
-                    toast.show('تعذّر حفظ الاسم', 'error');
+                    toast.show(t('profile.nameSaveFailed'), 'error');
                   }
                 }}
               />

@@ -10,6 +10,7 @@ import type {
   ReminderSetting,
 } from '@/core/types/domain';
 import { WIDGET_ROUTES } from '@/core/types/domain';
+import { translate } from '@/core/i18n/state';
 
 import type { NotificationService, ScheduleRequest } from '../contracts/NotificationService';
 import type { StorageService } from '../contracts/StorageService';
@@ -28,36 +29,36 @@ export const REMINDER_ROUTES: Record<ReminderChannel, string> = {
 export const DEFAULT_REMINDERS: Record<ReminderChannel, ReminderSetting> = {
   morning: {
     channel: 'morning',
-    label: 'أذكار الصباح',
-    description: 'تذكير بأذكار الصباح بعد الفجر',
+    label: translate('category.session.morning'),
+    description: translate('settings.notifications.channel.morningBody'),
     enabled: false,
     time: '07:00',
   },
   evening: {
     channel: 'evening',
-    label: 'أذكار المساء',
-    description: 'تذكير بأذكار المساء بعد العصر',
+    label: translate('category.session.evening'),
+    description: translate('settings.notifications.channel.eveningBody'),
     enabled: false,
     time: '17:30',
   },
   dailyDua: {
     channel: 'dailyDua',
-    label: 'دعاء اليوم',
-    description: 'دعاء مختار كل يوم',
+    label: translate('home.section.dailyDua'),
+    description: translate('settings.notifications.channel.dailyBody'),
     enabled: false,
     time: '09:00',
   },
   tasbeeh: {
     channel: 'tasbeeh',
-    label: 'تذكير التسبيح',
-    description: 'وقت هادئ للتسبيح والذكر',
+    label: translate('settings.notifications.channel.tasbeeh'),
+    description: translate('settings.notifications.channel.tasbeehBody'),
     enabled: false,
     time: '21:00',
   },
   custom: {
     channel: 'custom',
-    label: 'تذكير مخصص',
-    description: 'تذكير تختار وقته بنفسك',
+    label: translate('settings.notifications.channel.custom'),
+    description: translate('settings.notifications.channel.customBody'),
     enabled: false,
     time: '12:00',
   },
@@ -144,7 +145,7 @@ export class LocalNotificationPreferencesService implements NotificationService 
     if (patch.time !== undefined) {
       const minutes = parseTimeToMinutes(patch.time);
       if (minutes === null) {
-        return err(AppError.validation('صيغة الوقت غير صحيحة. استخدم النظام ٢٤ ساعة (مثال: ٠٧:٣٠).'));
+        return err(AppError.validation(translate('settings.notifications.invalidTime')));
       }
     }
 
@@ -172,10 +173,10 @@ export class LocalNotificationPreferencesService implements NotificationService 
     const prefs = await this.hydrate();
 
     if (patch.start !== undefined && parseTimeToMinutes(patch.start) === null) {
-      return err(AppError.validation('صيغة بداية ساعات الهدوء غير صحيحة (مثال: ٢٣:٠٠).'));
+      return err(AppError.validation(translate('settings.notifications.invalidQuietStart')));
     }
     if (patch.end !== undefined && parseTimeToMinutes(patch.end) === null) {
-      return err(AppError.validation('صيغة نهاية ساعات الهدوء غير صحيحة (مثال: ٠٥:٠٠).'));
+      return err(AppError.validation(translate('settings.notifications.invalidQuietEnd')));
     }
 
     const next: NotificationPreferences = {
@@ -203,29 +204,29 @@ export class LocalNotificationPreferencesService implements NotificationService 
     });
     return err(
       AppError.notConfigured(
-        'الإشعارات',
+        translate('error.feature.notifications'),
         `schedule(${request.identifier}) needs expo-notifications / FCM, added in the next stage.`,
       ),
     );
   }
 
   async cancel(_identifier: string): Promise<Result<void>> {
-    return err(AppError.notConfigured('الإشعارات', 'cancel requires a notification runtime.'));
+    return err(AppError.notConfigured(translate('error.feature.notifications'), 'cancel requires a notification runtime.'));
   }
 
   async cancelAll(): Promise<Result<void>> {
-    return err(AppError.notConfigured('الإشعارات', 'cancelAll requires a notification runtime.'));
+    return err(AppError.notConfigured(translate('error.feature.notifications'), 'cancelAll requires a notification runtime.'));
   }
 
   async registerDeviceToken(_uid: string): Promise<Result<string>> {
     return err(
-      AppError.notConfigured('إشعارات Firebase', 'registerDeviceToken requires an FCM backend.'),
+      AppError.notConfigured(translate('settings.notifications.backendFirebase'), 'registerDeviceToken requires an FCM backend.'),
     );
   }
 
   async subscribeToTopic(topic: string): Promise<Result<void>> {
     return err(
-      AppError.notConfigured('إشعارات Firebase', `subscribeToTopic(${topic}) requires an FCM backend.`),
+      AppError.notConfigured(translate('settings.notifications.backendFirebase'), `subscribeToTopic(${topic}) requires an FCM backend.`),
     );
   }
 }
@@ -262,11 +263,11 @@ function mergeWithDefaults(stored: NotificationPreferences): NotificationPrefere
 
 /** Convenience for the reminders screen: "next fire time" preview. */
 export function describeNextRun(setting: ReminderSetting, now: Date = new Date()): string {
-  if (!setting.enabled) return 'غير مفعّل';
+  if (!setting.enabled) return translate('settings.notifications.notEnabled');
   const minutes = parseTimeToMinutes(setting.time);
-  if (minutes === null) return 'وقت غير صالح';
+  if (minutes === null) return translate('settings.notifications.invalidTimeShort');
   const current = now.getHours() * 60 + now.getMinutes();
-  return minutes > current ? 'اليوم' : 'غدًا';
+  return minutes > current ? translate('common.day') : translate('settings.notifications.tomorrow');
 }
 
 export function currentTimeInput(): string {

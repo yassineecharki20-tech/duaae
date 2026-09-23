@@ -11,11 +11,11 @@ import { SettingsRow, SettingsSection } from '@/components/ui/SettingsRow';
 import { useToast } from '@/components/ui/Toast';
 
 import { appearanceOptions, motionOptions, textSizeOptions } from '@/core/i18n/options';
-import { useI18n } from '@/core/i18n/I18nProvider';
 import { useSettingsStore } from '@/store/settingsStore';
 import { services } from '@/services/registry';
 import { AnalyticsEvents } from '@/services/contracts/AnalyticsService';
 import type { ReadingScale } from '@/design/tokens/typography';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 /**
  * Appearance and reading.

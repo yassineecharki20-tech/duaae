@@ -7,6 +7,7 @@ import { AppError } from '@/core/errors/AppError';
 import { err, ok, type Result } from '@/core/types/Result';
 import type { Dhikr, TasbeehProgress } from '@/core/types/domain';
 import { DEFAULT_DHIKR_ID, DEFAULT_TARGET, TASBEEH_PRESETS, TASBEEH_TARGETS, findDhikr } from '@/data/tasbeeh/presets';
+import { translate } from '@/core/i18n/state';
 
 export interface TasbeehStoreState {
   selectedDhikrId: string;
@@ -146,17 +147,17 @@ export const useTasbeehStore = create<TasbeehStoreState>()(
       addCustomDhikr: (label) => {
         const trimmed = (label ?? '').replace(/\s+/g, ' ').trim();
         if (trimmed.length < 2) {
-          return err(AppError.validation('اكتب ذكرًا لا يقل عن حرفين.'));
+          return err(AppError.validation(translate('tasbeeh.customTooShort')));
         }
         if (trimmed.length > 80) {
-          return err(AppError.validation('الذكر طويل جدًا (٨٠ حرفًا كحد أقصى).'));
+          return err(AppError.validation(translate('tasbeeh.customTooLong')));
         }
         const state = get();
         const duplicate = [...TASBEEH_PRESETS, ...state.customDhikr].some(
           (item) => item.label === trimmed,
         );
         if (duplicate) {
-          return err(AppError.validation('هذا الذكر موجود بالفعل.'));
+          return err(AppError.validation(translate('tasbeeh.customDuplicate')));
         }
         const dhikr: Dhikr = {
           id: `custom-${Date.now().toString(36)}`,

@@ -6,6 +6,7 @@ import { useAppTheme } from '@/design/theme/ThemeProvider';
 import { useOnboardingStore } from '@/store/onboardingStore';
 import { useSettingsStore } from '@/store/settingsStore';
 import { DuaaWordmark } from '@/components/brand/DuaaLogo';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 /**
  * Boot route.
@@ -17,6 +18,7 @@ import { DuaaWordmark } from '@/components/brand/DuaaLogo';
  */
 export default function IndexScreen() {
   const theme = useAppTheme();
+  const { t } = useI18n();
   const hydrated = useOnboardingStore((state) => state.hydrated);
   const completed = useOnboardingStore((state) => state.completed);
   const settingsHydrated = useSettingsStore((state) => state.hydrated);
@@ -27,7 +29,7 @@ export default function IndexScreen() {
     return (
       <View
         style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: theme.colors.background }}
-        accessibilityLabel="جارٍ تشغيل دعاء"
+        accessibilityLabel={t('app.booting')}
       >
         <Animated.View style={{ opacity: fade }}>
           <DuaaWordmark size={150} />

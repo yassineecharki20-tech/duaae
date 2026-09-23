@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppTheme } from '@/design/theme/ThemeProvider';
 import { AppText } from './AppText';
 import { IconButton } from './IconButton';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 export interface BottomSheetProps extends PropsWithChildren {
   visible: boolean;
@@ -35,6 +36,7 @@ export const BottomSheet = memo(function BottomSheet({
   testID,
 }: BottomSheetProps) {
   const theme = useAppTheme();
+  const { t } = useI18n();
   const insets = useSafeAreaInsets();
   const slide = useRef(new Animated.Value(0)).current;
 
@@ -64,7 +66,7 @@ export const BottomSheet = memo(function BottomSheet({
         style={{ flex: 1 }}
       >
         <Pressable
-          accessibilityLabel="إغلاق"
+          accessibilityLabel={t('common.close')}
           accessibilityRole="button"
           onPress={onDismiss}
           style={{
@@ -126,7 +128,7 @@ export const BottomSheet = memo(function BottomSheet({
                 <IconButton
                   icon="close-outline"
                   onPress={onDismiss}
-                  accessibilityLabel="إغلاق النافذة"
+                  accessibilityLabel={t('common.closeSheet')}
                 />
               </View>
 

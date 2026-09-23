@@ -10,6 +10,7 @@ import { EmptyState } from '@/components/ui/StateViews';
 import { DuaListItem } from '@/components/duas/DuaListItem';
 
 import { CATEGORY_BY_ID, DUAS_BY_CATEGORY } from '@/data/content';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 /**
  * Category browser for collection categories.
@@ -19,6 +20,7 @@ import { CATEGORY_BY_ID, DUAS_BY_CATEGORY } from '@/data/content';
  */
 export default function CategoryScreen() {
   const theme = useAppTheme();
+  const { t } = useI18n();
   const params = useLocalSearchParams<{ categoryId: string }>();
   const category = CATEGORY_BY_ID.get(params.categoryId ?? '');
 
@@ -33,12 +35,12 @@ export default function CategoryScreen() {
   if (!category) {
     return (
       <Screen>
-        <AppHeader title="التصنيف" />
+        <AppHeader title={t('category.screenTitle')} />
         <EmptyState
           icon="help-circle-outline"
-          title="التصنيف غير موجود"
-          description="ربما تغيّر الرابط أو حُذف التصنيف."
-          actionLabel="العودة إلى الأدعية"
+          title={t('category.notFoundTitle')}
+          description={t('category.notFoundBody')}
+          actionLabel={t('category.backToDuas')}
           onAction={() => router.replace('/duas')}
         />
       </Screen>
@@ -51,7 +53,7 @@ export default function CategoryScreen() {
       <Screen>
         <AppHeader title={category.title} />
         <View style={{ padding: theme.spacing.xxl }}>
-          <AppText tone="muted">جارٍ فتح جلسة الأذكار…</AppText>
+          <AppText tone="muted">{t('category.openingSession')}</AppText>
         </View>
       </Screen>
     );
@@ -66,9 +68,9 @@ export default function CategoryScreen() {
       <View style={{ paddingTop: theme.spacing.lg, gap: theme.spacing.md }}>
         {duas.length === 0 ? (
           <EmptyState
-            title="لا توجد أدعية هنا بعد"
-            description="سيُضاف المحتوى لهذا التصنيف في تحديث قادم."
-            actionLabel="تصفح التصنيفات"
+            title={t('category.emptyTitle')}
+            description={t('category.emptyBody')}
+            actionLabel={t('category.browse')}
             onAction={() => router.replace('/duas')}
           />
         ) : (

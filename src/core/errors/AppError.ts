@@ -3,8 +3,15 @@
  *
  * One error type for the whole app. Services translate whatever went wrong
  * (storage quota, missing Firebase config, offline network) into an `AppError`
- * with a `code` the UI can switch on, plus a ready-to-show Arabic message.
+ * with a `code` the UI can switch on, plus a ready-to-show message.
+ *
+ * Messages are never hardcoded here: each code maps to a catalog key and is
+ * resolved through `translate()` in the user's active language, so an error
+ * created in a service reads correctly on any screen.
  */
+
+import type { MessageKey } from '@/core/i18n/messages/ar';
+import { translate } from '@/core/i18n/state';
 
 export type AppErrorCode =
   /** A capability that intentionally has no implementation in this stage. */
@@ -21,8 +28,11 @@ export type AppErrorCode =
 
 export interface AppErrorOptions {
   code: AppErrorCode;
-  /** Message shown to the user. Always Arabic, always actionable. */
-  userMessage: string;
+  /**
+   * Message shown to the user, already localized by the caller. Optional:
+   * when omitted (or empty) the catalog default for `code` is used.
+   */
+  userMessage?: string;
   /** Technical detail for logs. Never rendered. */
   detail?: string;
   /** Can the user do something about it? Drives the retry/CTA button. */
@@ -32,18 +42,23 @@ export interface AppErrorOptions {
   cause?: unknown;
 }
 
-const DEFAULT_USER_MESSAGES: Record<AppErrorCode, string> = {
-  NOT_CONFIGURED: 'هذه الميزة تحتاج ربط الخادم، وستتوفر في المرحلة القادمة.',
-  OFFLINE: 'لا يوجد اتصال بالإنترنت. المحتوى المحفوظ يعمل بشكل طبيعي.',
-  NOT_FOUND: 'لم يتم العثور على المطلوب.',
-  PERMISSION_DENIED: 'لم يتم منح الإذن المطلوب.',
-  STORAGE_FAILURE: 'تعذّر الحفظ على الجهاز. تحقق من مساحة التخزين ثم أعد المحاولة.',
-  VALIDATION: 'بعض البيانات غير صحيحة.',
-  CANCELLED: 'تم الإلغاء.',
-  UNSUPPORTED_PLATFORM: 'هذه الميزة غير مدعومة على هذا الجهاز.',
-  TIMEOUT: 'استغرقت العملية وقتًا طويلًا. أعد المحاولة.',
-  UNKNOWN: 'حدث خطأ غير متوقع.',
+const CODE_MESSAGE_KEY: Record<AppErrorCode, MessageKey> = {
+  NOT_CONFIGURED: 'error.notConfigured',
+  OFFLINE: 'error.offline',
+  NOT_FOUND: 'error.notFound',
+  PERMISSION_DENIED: 'error.permission',
+  STORAGE_FAILURE: 'error.storage',
+  VALIDATION: 'error.validation',
+  CANCELLED: 'error.cancelled',
+  UNSUPPORTED_PLATFORM: 'error.unsupportedPlatform',
+  TIMEOUT: 'error.timeout',
+  UNKNOWN: 'error.unknown',
 };
+
+/** Catalog message for an error code, in the active language. */
+export function messageForCode(code: AppErrorCode): string {
+  return translate(CODE_MESSAGE_KEY[code]);
+}
 
 export class AppError extends Error {
   readonly code: AppErrorCode;
@@ -54,10 +69,11 @@ export class AppError extends Error {
   override readonly cause?: unknown;
 
   constructor(options: AppErrorOptions) {
-    super(options.detail ?? options.userMessage);
+    const userMessage = options.userMessage || messageForCode(options.code);
+    super(options.detail ?? userMessage);
     this.name = 'AppError';
     this.code = options.code;
-    this.userMessage = options.userMessage || DEFAULT_USER_MESSAGES[options.code];
+    this.userMessage = userMessage;
     this.detail = options.detail;
     this.recoverable = options.recoverable;
     this.recoveryAction = options.recoveryAction ?? (options.recoverable ? 'retry' : 'none');
@@ -67,7 +83,7 @@ export class AppError extends Error {
   static notConfigured(feature: string, detail?: string): AppError {
     return new AppError({
       code: 'NOT_CONFIGURED',
-      userMessage: `ميزة «${feature}» تحتاج ربط Firebase، وهي مهيأة لذلك في المرحلة القادمة.`,
+      userMessage: translate('error.notConfiguredFeature', { feature }),
       detail: detail ?? `Feature "${feature}" has no configured backend.`,
       recoverable: false,
       recoveryAction: 'configure-backend',
@@ -77,7 +93,6 @@ export class AppError extends Error {
   static offline(detail?: string): AppError {
     return new AppError({
       code: 'OFFLINE',
-      userMessage: DEFAULT_USER_MESSAGES.OFFLINE,
       detail,
       recoverable: true,
       recoveryAction: 'go-online',
@@ -87,7 +102,7 @@ export class AppError extends Error {
   static notFound(what: string, detail?: string): AppError {
     return new AppError({
       code: 'NOT_FOUND',
-      userMessage: `لم يتم العثور على ${what}.`,
+      userMessage: translate('error.notFoundWhat', { what }),
       detail,
       recoverable: false,
     });
@@ -96,7 +111,6 @@ export class AppError extends Error {
   static storage(detail?: string, cause?: unknown): AppError {
     return new AppError({
       code: 'STORAGE_FAILURE',
-      userMessage: DEFAULT_USER_MESSAGES.STORAGE_FAILURE,
       detail,
       recoverable: true,
       cause,
@@ -115,7 +129,6 @@ export class AppError extends Error {
   static cancelled(detail?: string): AppError {
     return new AppError({
       code: 'CANCELLED',
-      userMessage: DEFAULT_USER_MESSAGES.CANCELLED,
       detail,
       recoverable: false,
     });
@@ -124,7 +137,7 @@ export class AppError extends Error {
   static unsupported(feature: string, detail?: string): AppError {
     return new AppError({
       code: 'UNSUPPORTED_PLATFORM',
-      userMessage: `ميزة «${feature}» غير مدعومة على هذا الجهاز.`,
+      userMessage: translate('error.unsupportedFeature', { feature }),
       detail,
       recoverable: false,
     });
@@ -135,7 +148,6 @@ export class AppError extends Error {
     const message = cause instanceof Error ? cause.message : String(cause);
     return new AppError({
       code: 'UNKNOWN',
-      userMessage: DEFAULT_USER_MESSAGES.UNKNOWN,
       detail: `${fallbackDetail}: ${message}`,
       recoverable: true,
       cause,
@@ -148,5 +160,5 @@ export function isAppError(value: unknown): value is AppError {
 }
 
 export function toUserMessage(error: unknown): string {
-  return isAppError(error) ? error.userMessage : DEFAULT_USER_MESSAGES.UNKNOWN;
+  return isAppError(error) ? error.userMessage : messageForCode('UNKNOWN');
 }

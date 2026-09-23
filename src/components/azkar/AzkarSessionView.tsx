@@ -24,16 +24,27 @@ import { services } from '@/services/registry';
 import { AnalyticsEvents } from '@/services/contracts/AnalyticsService';
 
 import { a11yState } from '@/core/a11y/stateProps';
+import { useI18n } from '@/core/i18n/I18nProvider';
+import type { Translate } from '@/core/i18n/options';
+
+interface NextSession {
+  label: string;
+  icon: 'sunny-outline' | 'moon-outline';
+  route: string;
+}
 
 interface AzkarSessionViewProps {
   sessionKey: AzkarSessionKey;
 }
 
-const NEXT_SESSION: Record<AzkarSessionKey, { label: string; icon: 'sunny-outline' | 'moon-outline'; route: string }> = {
-  morning: { label: 'أذكار المساء', icon: 'moon-outline', route: '/azkar/evening' },
-  evening: { label: 'أذكار الصباح', icon: 'sunny-outline', route: '/azkar/morning' },
-  sleep: { label: 'أذكار الصباح', icon: 'sunny-outline', route: '/azkar/morning' },
-};
+/** Built per render so session labels follow the active language. */
+function buildNextSession(t: Translate): Record<AzkarSessionKey, NextSession> {
+  return {
+    morning: { label: t('category.session.evening'), icon: 'moon-outline', route: '/azkar/evening' },
+    evening: { label: t('category.session.morning'), icon: 'sunny-outline', route: '/azkar/morning' },
+    sleep: { label: t('category.session.morning'), icon: 'sunny-outline', route: '/azkar/morning' },
+  };
+}
 
 /**
  * An azkar session: morning, evening or sleep.
@@ -45,6 +56,8 @@ const NEXT_SESSION: Record<AzkarSessionKey, { label: string; icon: 'sunny-outlin
  */
 export function AzkarSessionView({ sessionKey }: AzkarSessionViewProps) {
   const theme = useAppTheme();
+  const { t, tp } = useI18n();
+  const nextSession = useMemo(() => buildNextSession(t), [t]);
   const toast = useToast();
   const [shareDua, setShareDua] = useState<Dua | null>(null);
 
@@ -88,7 +101,7 @@ export function AzkarSessionView({ sessionKey }: AzkarSessionViewProps) {
         void services
           .analytics()
           .track({ name: AnalyticsEvents.azkarSessionCompleted, params: { session: sessionKey } });
-        toast.show(`تمّت أذكار ${category?.title ?? ''} — تقبل الله`, 'success');
+        toast.show(t('azkar.sessionDoneNamed', { title: category?.title ?? '' }), 'success');
       }
     },
     [category?.title, counts, increment, isComplete, sessionKey, toast],
@@ -98,7 +111,7 @@ export function AzkarSessionView({ sessionKey }: AzkarSessionViewProps) {
     async (dua: Dua) => {
       const result = await services.clipboard().copy(dua.text);
       if (result.ok) {
-        toast.show('تم نسخ الذكر', 'success');
+        toast.show(t('azkar.copied'), 'success');
         void services.analytics().track({ name: AnalyticsEvents.duaCopied, params: { duaId: dua.id } });
       } else {
         toast.show(result.error.userMessage, 'error');
@@ -111,21 +124,21 @@ export function AzkarSessionView({ sessionKey }: AzkarSessionViewProps) {
     <Screen scroll testID={`azkar-${sessionKey}`} edges={['top', 'left', 'right']}>
       <View style={{ marginHorizontal: -theme.layout.screenGutter }}>
         <AppHeader
-          title={category?.title ?? 'الأذكار'}
-          subtitle={`${duas.length} ذكرًا · ${totalRepeats} تكرارًا`}
+          title={category?.title ?? t('azkar.screenTitle')}
+          subtitle={t('azkar.headerSummary', { duas: duas.length, repeats: totalRepeats })}
           actions={
             <>
               <IconButton
                 icon="refresh-outline"
-                accessibilityLabel="إعادة ضبط جلسة اليوم"
+                accessibilityLabel={t('azkar.resetToday')}
                 onPress={() => {
                   resetSession(sessionKey);
-                  toast.show('تمت إعادة ضبط جلسة اليوم', 'info');
+                  toast.show(t('azkar.resetTodayDone'), 'info');
                 }}
               />
               <IconButton
                 icon="search-outline"
-                accessibilityLabel="البحث في الأذكار"
+                accessibilityLabel={t('azkar.searchPlaceholder')}
                 onPress={() => router.push('/search')}
               />
             </>
@@ -144,10 +157,10 @@ export function AzkarSessionView({ sessionKey }: AzkarSessionViewProps) {
                 style={{ color: sessionComplete ? theme.colors.onPrimary : theme.colors.text }}
               >
                 {sessionComplete
-                  ? 'أتممت الأذكار — تقبل الله'
+                  ? t('azkar.sessionComplete')
                   : hydrated
-                    ? `بقي ${remaining} تكرارًا`
-                    : 'جارٍ التحميل…'}
+                    ? tp('azkar.remaining', remaining)
+                    : t('common.loading')}
               </AppText>
               <AppText
                 style={{
@@ -162,17 +175,17 @@ export function AzkarSessionView({ sessionKey }: AzkarSessionViewProps) {
               value={totalRepeats === 0 ? 0 : doneRepeats / totalRepeats}
               height={8}
               tone="accent"
-              accessibilityLabel={`تقدّم جلسة ${category?.title ?? ''}`}
+              accessibilityLabel={t('azkar.progressA11y', { title: category?.title ?? '' })}
             />
             <View style={{ flexDirection: 'row', gap: theme.spacing.sm }}>
               <Chip
                 icon="flame-outline"
-                label={`تتابع ${streak.current} يوم`}
+                label={tp('azkar.streak', streak.current)}
                 tone={sessionComplete ? 'gold' : 'neutral'}
               />
               <Chip
                 icon="trophy-outline"
-                label={`الأطول ${streak.longest}`}
+                label={t('azkar.longest', { count: streak.longest })}
                 tone={sessionComplete ? 'gold' : 'neutral'}
               />
             </View>
@@ -215,13 +228,13 @@ export function AzkarSessionView({ sessionKey }: AzkarSessionViewProps) {
                     <IconButton
                       icon="copy-outline"
                       size={36}
-                      accessibilityLabel="نسخ الذكر"
+                      accessibilityLabel={t('azkar.copy')}
                       onPress={() => void copy(dua)}
                     />
                     <IconButton
                       icon="share-outline"
                       size={36}
-                      accessibilityLabel="مشاركة الذكر"
+                      accessibilityLabel={t('azkar.share')}
                       onPress={() => setShareDua(dua)}
                     />
                     <FavoriteButton duaId={dua.id} size={36} />
@@ -235,20 +248,20 @@ export function AzkarSessionView({ sessionKey }: AzkarSessionViewProps) {
         {sessionComplete ? (
           <View style={{ gap: theme.spacing.md, paddingBottom: theme.spacing.xxl }}>
             <AppText tone="muted" style={{ fontSize: 13 }}>
-              أحسنت. ماذا بعد؟
+              {t('azkar.wellDone')}
             </AppText>
             <View style={{ flexDirection: 'row', gap: theme.spacing.sm, flexWrap: 'wrap' }}>
               <Chip
-                label={NEXT_SESSION[sessionKey].label}
-                icon={NEXT_SESSION[sessionKey].icon}
-                onPress={() => router.push(NEXT_SESSION[sessionKey].route as never)}
+                label={nextSession[sessionKey].label}
+                icon={nextSession[sessionKey].icon}
+                onPress={() => router.push(nextSession[sessionKey].route as never)}
               />
-              <Chip label="التسبيح" icon="repeat-outline" onPress={() => router.push('/tasbeeh')} />
+              <Chip label={t('azkar.tasbeeh')} icon="repeat-outline" onPress={() => router.push('/tasbeeh')} />
             </View>
           </View>
         ) : (
           <AppText tone="subtle" style={{ fontSize: 12, paddingBottom: theme.spacing.xxl }}>
-            اضغط على نص الذكر لتسجيل تكرار. التقدّم يخص اليوم ويُصفّر تلقائيًا عند منتصف الليل.
+            {t('azkar.tapHint')}
           </AppText>
         )}
       </View>
@@ -270,10 +283,11 @@ function RepeatCounter({
   onPress: () => void;
 }) {
   const theme = useAppTheme();
+  const { t } = useI18n();
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={done ? `تم — ${target} من ${target}` : `اضغط للتكرار — ${current} من ${target}`}
+      accessibilityLabel={done ? t('azkar.counterDone', { target }) : t('azkar.counterTap', { current, target })}
       {...a11yState({ disabled: done })}
       disabled={done}
       onPress={onPress}
@@ -299,7 +313,7 @@ function RepeatCounter({
         weight="semiBold"
         style={{ fontSize: 13, color: done ? theme.colors.success : theme.colors.primary }}
       >
-        {done ? 'تم' : `${current} / ${target}`}
+        {done ? t('common.done') : `${current} / ${target}`}
       </AppText>
     </Pressable>
   );

@@ -13,6 +13,7 @@ import { BottomSheet } from '@/components/ui/BottomSheet';
 import { Button } from '@/components/ui/Button';
 import { useToast } from '@/components/ui/Toast';
 import { ShareCardView } from './ShareCardView';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 export interface ShareSheetProps {
   dua: Dua | null;
@@ -29,6 +30,7 @@ export interface ShareSheetProps {
  */
 export const ShareSheet = memo(function ShareSheet({ dua, visible, onDismiss }: ShareSheetProps) {
   const theme = useAppTheme();
+  const { t } = useI18n();
   const toast = useToast();
   const cardRef = useRef<View>(null);
   const [busy, setBusy] = useState<'card' | 'save' | 'text' | 'copy' | null>(null);
@@ -62,7 +64,7 @@ export const ShareSheet = memo(function ShareSheet({ dua, visible, onDismiss }: 
           const text = buildShareText(dua, { categoryTitle });
           const result = await services.clipboard().copy(text);
           if (result.ok) {
-            toast.show('تم نسخ الدعاء', 'success');
+            toast.show(t('share.copied'), 'success');
             void services.analytics().track({ name: AnalyticsEvents.duaCopied, params: { duaId: dua.id } });
           } else {
             toast.show(result.error.userMessage, 'error');
@@ -81,7 +83,7 @@ export const ShareSheet = memo(function ShareSheet({ dua, visible, onDismiss }: 
     <BottomSheet
       visible={visible && dua !== null}
       onDismiss={onDismiss}
-      title="مشاركة الدعاء"
+      title={t('reader.share')}
       subtitle={dua?.title ?? categoryTitle}
       maxHeightRatio={0.9}
     >
@@ -91,15 +93,15 @@ export const ShareSheet = memo(function ShareSheet({ dua, visible, onDismiss }: 
 
           <View style={{ gap: theme.spacing.sm }}>
             <Button
-              label="مشاركة كبطاقة"
+              label={t('share.asCard')}
               icon="image-outline"
               onPress={() => run('card')}
               loading={busy === 'card'}
               fullWidth
-              accessibilityHint="ينشئ صورة جميلة تحمل شعار دعاء"
+              accessibilityHint={t('share.asCardSubtitle')}
             />
             <Button
-              label="حفظ البطاقة"
+              label={t('share.saveCard')}
               icon="download-outline"
               variant="secondary"
               onPress={() => run('save')}
@@ -108,7 +110,7 @@ export const ShareSheet = memo(function ShareSheet({ dua, visible, onDismiss }: 
             />
             <View style={{ flexDirection: 'row', gap: theme.spacing.sm }}>
               <Button
-                label="مشاركة كنص"
+                label={t('share.asText')}
                 icon="share-social-outline"
                 variant="outline"
                 onPress={() => run('text')}
@@ -116,7 +118,7 @@ export const ShareSheet = memo(function ShareSheet({ dua, visible, onDismiss }: 
                 fullWidth
               />
               <Button
-                label="نسخ النص"
+                label={t('share.copyText')}
                 icon="copy-outline"
                 variant="ghost"
                 onPress={() => run('copy')}

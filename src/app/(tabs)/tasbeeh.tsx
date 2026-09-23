@@ -21,6 +21,7 @@ import { services } from '@/services/registry';
 import { AnalyticsEvents } from '@/services/contracts/AnalyticsService';
 import { TASBEEH_PRESETS, TASBEEH_TARGETS, findDhikr } from '@/data/tasbeeh/presets';
 import { isAppError } from '@/core/errors/AppError';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 const TARGET_OPTIONS = TASBEEH_TARGETS.slice(0, 4).map((target) => ({
   value: String(target),
@@ -36,6 +37,7 @@ const TARGET_OPTIONS = TASBEEH_TARGETS.slice(0, 4).map((target) => ({
  */
 export default function TasbeehScreen() {
   const theme = useAppTheme();
+  const { t } = useI18n();
   const toast = useToast();
 
   const selectedDhikrId = useTasbeehStore((state) => state.selectedDhikrId);
@@ -83,7 +85,7 @@ export default function TasbeehScreen() {
 
     if (result.completedRound) {
       void services.feedback().playSound('targetReached');
-      toast.show(`أتممت ${target} — بارك الله فيك`, 'success');
+      toast.show(t('tasbeeh.targetReached', { target }), 'success');
       void services.analytics().track({ name: AnalyticsEvents.tasbeehTargetReached, params: { target } });
     }
   }, [increment, selectedDhikrId, target, toast]);
@@ -91,36 +93,36 @@ export default function TasbeehScreen() {
   const submitCustom = useCallback(async () => {
     const result = addCustomDhikr(customLabel);
     if (!result.ok) {
-      setCustomError(isAppError(result.error) ? result.error.userMessage : 'تعذّر إضافة الذكر');
+      setCustomError(isAppError(result.error) ? result.error.userMessage : t('tasbeeh.customAddFailed'));
       return;
     }
     setCustomError(null);
     setCustomLabel('');
     setSheet(null);
-    toast.show('تمت إضافة الذكر', 'success');
+    toast.show(t('tasbeeh.customAdded'), 'success');
   }, [addCustomDhikr, customLabel, toast]);
 
   return (
     <Screen scroll edges={['top', 'left', 'right']} testID="tasbeeh-screen">
       <View style={{ marginHorizontal: -theme.layout.screenGutter }}>
         <AppHeader
-          title="التسبيح"
-          subtitle="عدّاد محفوظ على جهازك"
+          title={t('azkar.tasbeeh')}
+          subtitle={t('tasbeeh.screenSubtitle')}
           canGoBack={false}
           actions={
             <>
               <IconButton
                 icon="refresh-outline"
-                accessibilityLabel="إعادة ضبط العدّاد"
+                accessibilityLabel={t('tasbeeh.reset')}
                 onPress={() => {
                   resetDhikr();
                   void services.analytics().track({ name: AnalyticsEvents.tasbeehReset, params: { dhikrId: selectedDhikrId } });
-                  toast.show('تم تصفير العدّاد', 'info');
+                  toast.show(t('tasbeeh.resetDone'), 'info');
                 }}
               />
               <IconButton
                 icon="settings-outline"
-                accessibilityLabel="إعدادات التسبيح"
+                accessibilityLabel={t('tasbeeh.settings')}
                 onPress={() => setSheet('dhikr')}
               />
             </>
@@ -141,20 +143,20 @@ export default function TasbeehScreen() {
           />
 
           <View style={{ flexDirection: 'row', gap: theme.spacing.sm, flexWrap: 'wrap', justifyContent: 'center' }}>
-            <Chip label={`الإجمالي ${total}`} icon="repeat-outline" />
-            <Chip label={`الجولات ${rounds}`} icon="trophy-outline" />
-            <Chip label={`الهدف ${target}`} icon="flag-outline" onPress={() => setSheet('target')} />
+            <Chip label={t('tasbeeh.totalValue', { count: total })} icon="repeat-outline" />
+            <Chip label={t('tasbeeh.roundsValue', { count: rounds })} icon="trophy-outline" />
+            <Chip label={t('tasbeeh.targetValue', { count: target })} icon="flag-outline" onPress={() => setSheet('target')} />
           </View>
 
           <View style={{ flexDirection: 'row', gap: theme.spacing.sm }}>
-            <Button variant="outline" size="sm" accessibilityLabel="تغيير الذكر" onPress={() => setSheet('dhikr')} label="تغيير الذكر" />
-            <Button variant="outline" size="sm" accessibilityLabel="إضافة ذكر" onPress={() => setSheet('custom')} label="+ ذكر مخصص" />
+            <Button variant="outline" size="sm" accessibilityLabel={t('tasbeeh.changeDhikr')} onPress={() => setSheet('dhikr')} label={t('tasbeeh.changeDhikr')} />
+            <Button variant="outline" size="sm" accessibilityLabel={t('tasbeeh.addDhikr')} onPress={() => setSheet('custom')} label={t('tasbeeh.addDhikrShort')} />
           </View>
         </View>
 
         {/* Quick dhikr switcher */}
         <View style={{ gap: theme.spacing.sm }}>
-          <AppText variant="heading">أذكار سريعة</AppText>
+          <AppText variant="heading">{t('tasbeeh.quickAzkar')}</AppText>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing.sm }}>
             {[...TASBEEH_PRESETS, ...customDhikr].map((item) => (
               <Chip
@@ -170,7 +172,7 @@ export default function TasbeehScreen() {
         <Card variant="outline" padding={theme.spacing.md}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             <AppText tone="muted" style={{ fontSize: 13 }}>
-              مجموع تسبيحاتك: {todayTotal}
+              {t('tasbeeh.todayTotal', { count: todayTotal })}
             </AppText>
             <AppText
               tone="primary"
@@ -178,9 +180,9 @@ export default function TasbeehScreen() {
               style={{ fontSize: 13 }}
               onPress={() => router.push('/settings')}
               accessibilityRole="button"
-              accessibilityLabel="إعدادات الصوت واللمس"
+              accessibilityLabel={t('tasbeeh.soundSettings')}
             >
-              الصوت واللمس
+              {t('settings.appearance.feedback')}
             </AppText>
           </View>
         </Card>
@@ -189,8 +191,8 @@ export default function TasbeehScreen() {
       <BottomSheet
         visible={sheet === 'target'}
         onDismiss={() => setSheet(null)}
-        title="هدف التسبيح"
-        subtitle="عدد التكرارات لكل جولة"
+        title={t('tasbeeh.targetTitle')}
+        subtitle={t('tasbeeh.targetSubtitle')}
         scrollable={false}
       >
         <View style={{ gap: theme.spacing.md, paddingBottom: theme.spacing.xl }}>
@@ -198,7 +200,7 @@ export default function TasbeehScreen() {
             options={TARGET_OPTIONS}
             value={String(target)}
             onChange={(value) => setTarget(Number(value))}
-            accessibilityLabel="اختيار هدف التسبيح"
+            accessibilityLabel={t('tasbeeh.targetSheetTitle')}
           />
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing.sm }}>
             {TASBEEH_TARGETS.map((item) => (
@@ -216,7 +218,7 @@ export default function TasbeehScreen() {
       <BottomSheet
         visible={sheet === 'dhikr'}
         onDismiss={() => setSheet(null)}
-        title="اختر الذكر"
+        title={t('tasbeeh.chooseDhikr')}
       >
         <View style={{ gap: theme.spacing.sm, paddingBottom: theme.spacing.xl }}>
           {[...TASBEEH_PRESETS, ...customDhikr].map((item) => (
@@ -241,7 +243,10 @@ export default function TasbeehScreen() {
                   tone={item.id === selectedDhikrId ? undefined : 'subtle'}
                   style={{ fontSize: 12, color: item.id === selectedDhikrId ? theme.colors.onPrimary : undefined }}
                 >
-                  {progress[item.id]?.total ?? 0} تسبيحة · {item.isPreset ? 'من الأذكار المأثورة' : 'ذكر مخصص'}
+                  {t('tasbeeh.itemSummary', {
+                    count: progress[item.id]?.total ?? 0,
+                    section: item.isPreset ? t('tasbeeh.presetSection') : t('tasbeeh.customSection'),
+                  })}
                 </AppText>
               </View>
             </Card>
@@ -252,30 +257,30 @@ export default function TasbeehScreen() {
       <BottomSheet
         visible={sheet === 'custom'}
         onDismiss={() => setSheet(null)}
-        title="ذكر مخصص"
-        subtitle="يُحفظ على جهازك ويظهر مع الأذكار"
+        title={t('tasbeeh.customSection')}
+        subtitle={t('tasbeeh.customSheetSubtitle')}
         scrollable={false}
       >
         <View style={{ gap: theme.spacing.lg, paddingBottom: theme.spacing.xl }}>
           <TextField
             value={customLabel}
             onChangeText={setCustomLabel}
-            placeholder="مثال: سبحان الله وبحمده"
-            label="نص الذكر"
+            placeholder={t('tasbeeh.customPlaceholder')}
+            label={t('tasbeeh.customFieldLabel')}
             error={customError}
             multiline
             autoFocus
-            accessibilityLabel="نص الذكر المخصص"
+            accessibilityLabel={t('tasbeeh.customFieldA11y')}
           />
           <View style={{ flexDirection: 'row', gap: theme.spacing.sm }}>
             <View style={{ flex: 1 }}>
-              <Button variant="ghost" fullWidth label="إلغاء" accessibilityLabel="إلغاء" onPress={() => setSheet(null)} />
+              <Button variant="ghost" fullWidth label={t('common.cancel')} accessibilityLabel={t('common.cancel')} onPress={() => setSheet(null)} />
             </View>
             <View style={{ flex: 1 }}>
               <Button
                 fullWidth
-                label="حفظ"
-                accessibilityLabel="حفظ الذكر"
+                label={t('common.save')}
+                accessibilityLabel={t('tasbeeh.customSave')}
                 onPress={() => void submitCustom()}
                 disabled={customLabel.trim().length === 0}
               />

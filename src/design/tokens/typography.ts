@@ -82,12 +82,3 @@ export const readingScales = {
 
 export type ReadingScale = keyof typeof readingScales;
 
-export const readingScaleOptions: readonly {
-  value: ReadingScale;
-  label: string;
-}[] = [
-  { value: 'small', label: 'صغير' },
-  { value: 'normal', label: 'عادي' },
-  { value: 'large', label: 'كبير' },
-  { value: 'xLarge', label: 'كبير جدًا' },
-];

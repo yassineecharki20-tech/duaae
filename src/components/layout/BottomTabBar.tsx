@@ -5,6 +5,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { BottomTabBarProps } from 'expo-router/js-tabs';
 
 import { useAppTheme } from '@/design/theme/ThemeProvider';
+import { useI18n } from '@/core/i18n/I18nProvider';
+import type { MessageKey } from '@/core/i18n/messages/ar';
 import { AppText } from '@/components/ui/AppText';
 
 import { a11yState } from '@/core/a11y/stateProps';
@@ -12,15 +14,16 @@ import { a11yState } from '@/core/a11y/stateProps';
 interface TabMeta {
   icon: keyof typeof Ionicons.glyphMap;
   iconActive: keyof typeof Ionicons.glyphMap;
-  label: string;
+  /** Message key, resolved at render so labels follow the active language. */
+  labelKey: MessageKey;
 }
 
 const TAB_META: Record<string, TabMeta> = {
-  index: { icon: 'home-outline', iconActive: 'home', label: 'الرئيسية' },
-  duas: { icon: 'book-outline', iconActive: 'book', label: 'الأدعية' },
-  tasbeeh: { icon: 'repeat-outline', iconActive: 'repeat', label: 'التسبيح' },
-  community: { icon: 'people-outline', iconActive: 'people', label: 'المجتمع' },
-  profile: { icon: 'person-outline', iconActive: 'person', label: 'حسابي' },
+  index: { icon: 'home-outline', iconActive: 'home', labelKey: 'nav.tab.home' },
+  duas: { icon: 'book-outline', iconActive: 'book', labelKey: 'nav.tab.duas' },
+  tasbeeh: { icon: 'repeat-outline', iconActive: 'repeat', labelKey: 'nav.tab.tasbeeh' },
+  community: { icon: 'people-outline', iconActive: 'people', labelKey: 'nav.tab.community' },
+  profile: { icon: 'person-outline', iconActive: 'person', labelKey: 'nav.tab.profile' },
 };
 
 /**
@@ -35,6 +38,7 @@ export const BottomTabBar = memo(function BottomTabBar({
   descriptors,
 }: BottomTabBarProps) {
   const theme = useAppTheme();
+  const { t } = useI18n();
   const insets = useSafeAreaInsets();
 
   return (
@@ -58,15 +62,14 @@ export const BottomTabBar = memo(function BottomTabBar({
         }}
       >
         {state.routes.map((route, routeIndex) => {
-          const meta = TAB_META[route.name] ?? {
-            icon: 'ellipse-outline' as const,
-            iconActive: 'ellipse' as const,
-            label: route.name,
-          };
+          const meta = TAB_META[route.name];
+          const fallbackLabel = route.name;
           const isFocused = state.index === routeIndex;
           // React Navigation keys descriptors by route *key*, not route name.
           const descriptor = descriptors[route.key];
-          const label = (descriptor?.options?.title as string | undefined) ?? meta.label;
+          const label =
+            (descriptor?.options?.title as string | undefined) ??
+            (meta ? t(meta.labelKey) : fallbackLabel);
 
           const onPress = () => {
             const event = navigation.emit({
@@ -102,7 +105,7 @@ export const BottomTabBar = memo(function BottomTabBar({
             >
               <View style={{ position: 'relative' }}>
                 <Ionicons
-                  name={isFocused ? meta.iconActive : meta.icon}
+                  name={isFocused ? (meta?.iconActive ?? 'ellipse') : (meta?.icon ?? 'ellipse-outline')}
                   size={22}
                   color={isFocused ? theme.colors.tabActive : theme.colors.tabInactive}
                 />

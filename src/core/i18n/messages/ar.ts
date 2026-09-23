@@ -25,6 +25,9 @@ export const ar = {
   'app.name': 'دعاء',
   'app.nameFull': 'DUAA | دعاء',
   'app.tagline': 'رفيقك اليومي للذكر',
+  'app.booting': 'جارٍ تشغيل دعاء',
+  'app.logoA11y': 'شعار دعاء',
+  'app.logoWordmarkA11y': 'دعاء DUAA',
 
   /* ------------------------------------------------------------- common */
   'common.cancel': 'إلغاء',
@@ -69,6 +72,9 @@ export const ar = {
   'common.add': 'إضافة',
   'common.openSettings': 'افتح الإعدادات',
   'common.checkConnection': 'تحقق من الاتصال',
+  'common.showAll': 'عرض الكل',
+  'common.details': 'التفاصيل',
+  'common.a11ySeparator': '، ',
 
   /* ---------------------------------------------------------------- nav */
   'nav.tab.home': 'الرئيسية',
@@ -126,6 +132,14 @@ export const ar = {
   'home.sessionNow': 'وقتها الآن',
   'home.sessionAnnouncement': '{title} — وقتها الآن',
   'home.recentEmpty': 'لم تفتح أي دعاء بعد',
+  'home.shortcuts': 'اختصارات',
+  'home.todayAzkar': 'أذكار اليوم',
+  'home.openToStart': 'افتح للبدء',
+  'home.contentLoadFailed': 'تعذّر تحميل المحتوى. أعد المحاولة من الإعدادات.',
+  'home.titleGreeting': 'السلام عليكم 👋',
+  'home.titleGreetingNamed': 'السلام عليكم {name} 👋',
+  'home.libraryFootnote': '{count} دعاءً وذكرًا موثّقًا — متاح بالكامل دون اتصال.',
+  'home.categoriesTitle': 'تصفّح الأدعية',
 
   /* --------------------------------------------------------- categories */
   'category.screenTitle': 'التصنيف',
@@ -164,6 +178,11 @@ export const ar = {
   'category.session.morning': 'أذكار الصباح',
   'category.session.evening': 'أذكار المساء',
   'category.session.sleep': 'أذكار النوم',
+  'category.openingSession': 'جارٍ فتح جلسة الأذكار…',
+  'category.itemsValue': '{count} ذكرًا',
+  'category.itemsValue.one': 'ذكر واحد',
+  'category.itemsValue.two': 'ذكران',
+  'category.itemsValue.few': '{count} أذكار',
 
   /* -------------------------------------------------------------- duas */
   'duas.screenTitle': 'الأدعية والأذكار',
@@ -186,6 +205,9 @@ export const ar = {
   'duas.source.label': 'المصدر: {text}',
   'duas.source.quranFull': 'القرآن الكريم — سورة {surah}، الآية {ayah}',
   'duas.virtueLabel': 'فضله: {text}',
+  'duas.footnote': 'كل نص في دعاء منسوب إلى مصدره المطبوع. المحتوى مخزّن على جهازك ويعمل دون إنترنت.',
+  'duas.favoritesNote': 'لديك {count} دعاءً في المفضلة',
+  'duas.source.title': 'المصدر',
 
   /* ------------------------------------------------------------ reader */
   'reader.title': 'الدعاء',
@@ -235,6 +257,11 @@ export const ar = {
   'azkar.tasbeeh': 'التسبيح',
   'azkar.counterDone': 'تم — {target} من {target}',
   'azkar.counterTap': 'اضغط للتكرار — {current} من {target}',
+  'azkar.sessionDoneNamed': 'تمّت أذكار {title} — تقبل الله',
+  'azkar.headerSummary': '{duas} ذكرًا · {repeats} تكرارًا',
+  'azkar.longest': 'الأطول {count}',
+  'azkar.wellDone': 'أحسنت. ماذا بعد؟',
+  'azkar.tapHint': 'اضغط على نص الذكر لتسجيل تكرار. التقدّم يخص اليوم ويُصفّر تلقائيًا عند منتصف الليل.',
 
   /* ----------------------------------------------------------- tasbeeh */
   'tasbeeh.screenTitle': 'التسبيح',
@@ -269,10 +296,21 @@ export const ar = {
   'tasbeeh.targetReached': 'أتممت {target} — بارك الله فيك',
   'tasbeeh.a11y.counter': 'عداد التسبيح — {value} من {target}',
   'tasbeeh.a11y.counterHint': 'اضغط لزيادة العدّاد',
+  'tasbeeh.quickAzkar': 'أذكار سريعة',
+  'tasbeeh.totalValue': 'الإجمالي {count}',
+  'tasbeeh.roundsValue': 'الجولات {count}',
+  'tasbeeh.targetValue': 'الهدف {count}',
+  'tasbeeh.todayTotal': 'مجموع تسبيحاتك: {count}',
+  'tasbeeh.itemSummary': '{count} تسبيحة · {section}',
+  'tasbeeh.ofTarget': 'من {target}',
 
   /* --------------------------------------------------------- favorites */
   'favorites.screenTitle': 'المفضلة',
   'favorites.countSummary': '{count} دعاءً محفوظًا',
+  'favorites.missingItems': '{count} عنصرًا محفوظًا يشير إلى نص غير متوفر في هذه الحزمة.',
+  'favorites.missingItems.one': 'عنصر واحد محفوظ يشير إلى نص غير متوفر في هذه الحزمة.',
+  'favorites.missingItems.two': 'عنصران محفوظان يشيران إلى نص غير متوفر في هذه الحزمة.',
+  'favorites.missingItems.few': '{count} عناصر محفوظة تشير إلى نص غير متوفر في هذه الحزمة.',
   'favorites.emptyTitle': 'لا توجد أدعية محفوظة',
   'favorites.emptyBody':
     'اضغط على القلب بجانب أي دعاء لحفظه هنا. المفضلة تُخزَّن على جهازك وتبقى بعد إغلاق التطبيق.',
@@ -343,6 +381,7 @@ export const ar = {
   'search.match.keyword': 'في الكلمات المفتاحية',
   'search.match.category': 'في التصنيف',
   'search.match.source': 'في المصدر',
+  'search.matchLine': 'تطابق {where} · {category}',
   'search.suggest.morning': 'الصباح',
   'search.suggest.rizq': 'الرزق',
   'search.suggest.forgiveness': 'الاستغفار',
@@ -394,6 +433,10 @@ export const ar = {
   'community.plan.moderation': 'إشراف ومراجعة',
   'community.plan.moderationBody': 'كل نص ديني يمر على مراجعة قبل النشر؛ الإبلاغ متاح لأي محتوى.',
   'community.publishDisabled': 'النشر يحتاج خدمة حسابات — المرحلة القادمة',
+  'community.whatYouCanDoNow': 'ما يمكنك فعله الآن:',
+  'community.whatArrivesAtLaunch': 'ما الذي سيتوفر عند الإطلاق؟',
+  'community.shareDuaNow': 'شارك دعاءً الآن',
+  'community.emptyBodyHonest': '{message} لن تجد هنا بيانات تجريبية أو منشورات وهمية — نفضّل أن تبقى الصفحة صادقة حتى تكتمل.',
 
   /* ----------------------------------------------------------- profile */
   'profile.screenTitle': 'حسابي',
@@ -433,6 +476,13 @@ export const ar = {
   'profile.preference.home': 'الشاشة الرئيسية',
   'profile.preference.reading': 'القراءة',
   'profile.preference.widget': 'الودجت',
+  'profile.appSubtitle': 'دعاء — يعمل دون إنترنت، بلا إعلانات، بلا تتبع.',
+  'profile.yourStats': 'إحصاءاتك',
+  'profile.signInNotEnabled': 'تسجيل الدخول غير مُفعّل بعد',
+  'profile.accountReadyNote': 'خدمة الحساب جاهزة في الكود لكنها تنتظر ربط Firebase Auth. حتى ذلك الحين يبقى ملفك وإحصاءاتك ومفضلتك محفوظة على هذا الجهاز فقط — ولن يعرض التطبيق زر دخول وهميًا.',
+  'profile.currentStreakValue': 'تتابع حالي: {count} يوم',
+  'profile.longestStreakValue': 'أطول تتابع: {count} يوم',
+  'profile.detailsArrow': 'التفاصيل ←',
 
   /* ---------------------------------------------------------- settings */
   'settings.screenTitle': 'الإعدادات',
@@ -592,6 +642,8 @@ export const ar = {
   'settings.notifications.notEnabled': 'غير مفعّل',
   'settings.notifications.invalidTimeShort': 'وقت غير صالح',
   'settings.notifications.tomorrow': 'غدًا',
+  'settings.notifications.stageNote': 'في هذه المرحلة يحفظ دعاء أوقاتك وتفضيلاتك على الجهاز ويتحقّق منها، لكنه لا يسجّل إشعارات لدى نظام التشغيل. عند ربط خدمة الإشعارات ستعمل نفس هذه الشاشة دون تغيير في التصميم.',
+  'settings.notifications.currentTime': 'الوقت الحالي: {time}',
 
   /* --------------------------------------------- settings · widget */
   'settings.widget.screenTitle': 'الودجت',
@@ -618,7 +670,7 @@ export const ar = {
   'settings.account.signedOut': 'تم تسجيل الخروج',
   'settings.account.deleted': 'تم حذف الحساب',
   'settings.account.signedInState': 'مسجّل الدخول',
-  'settings.account.notConfigured': 'خدمة الحساب غير مُهيأة في هذا البناء',
+  'settings.account.notConfigured': 'خدمة الحساب غير مُهيأة في هذا الإصدار',
   'settings.account.checking': 'جارٍ التحقق من الجلسة…',
   'settings.account.sessionNote':
     'الجلسة مرتبطة بخادم الحسابات وتُستعاد تلقائيًا عند فتح التطبيق.',
@@ -662,6 +714,9 @@ export const ar = {
     'تُحفظ تفضيلاتك على الجهاز، وتُزامَن مع حسابك عندما تتوفر خدمة الحسابات.',
   'settings.account.prefsSyncUnavailable': 'المزامنة غير متاحة — لا يوجد حساب مرتبط',
   'settings.account.prefsSyncedAt': 'آخر مزامنة: {date}',
+  'settings.account.signedInWithEmail': 'مسجّل الدخول — {email}',
+  'settings.account.contactSupport': 'للتواصل بشأن الحساب أو البيانات: {email}',
+  'settings.account.deleteBody': 'سيُحذف حسابك وبياناتك المرتبطة به من الخادم. البيانات المحفوظة على جهازك تُحذف من شاشة «الإعدادات ▸ إعادة ضبط البيانات المحلية».',
 
   /* ------------------------------------------------ settings · about */
   'settings.about.screenTitle': 'عن التطبيق',
@@ -694,6 +749,9 @@ export const ar = {
   'settings.about.analyticsOff': 'معطّلة — لا يُرسل أي حدث',
   'settings.about.withAnalytics': 'مع تحليلات مفعّلة',
   'settings.about.withoutAnalytics': 'بلا تحليلات',
+  'settings.about.contentDuasValue': '{count} نصًّا',
+  'settings.about.contact': 'تواصل: {email}',
+  'settings.about.analyticsService': 'خدمة الدعم الحالية: {state}',
   'settings.about.backend.content': 'المحتوى (أدعية وأذكار)',
   'settings.about.backend.contentDetail': 'حزمة محلية — يعمل دون إنترنت',
   'settings.about.backend.favorites': 'المفضلة',
@@ -712,6 +770,8 @@ export const ar = {
   'settings.about.backend.analyticsOn': 'مفعّلة',
   'settings.about.backend.analyticsOff': 'معطّلة',
   'settings.about.backend.haptics': 'الاهتزاز',
+  'settings.about.appDescription': 'تطبيق أدعية وأذكار يعمل دون إنترنت، بلا إعلانات وبلا تتبع. كل نص منسوب إلى مصدره المطبوع.',
+  'settings.about.noGeneratedText': 'لا يضيف التطبيق أي نص من توليد آلي أو من مصادر غير موثوقة. ما لا يُعرف مصدره أو درجته لا يُنشر.',
 
   /* --------------------------------------------- settings · privacy */
   'settings.privacy.screenTitle': 'سياسة الخصوصية',
@@ -749,6 +809,7 @@ export const ar = {
     'التطبيق مخصص للاستخدام العام ولا يجمع بيانات عن قصد من الأطفال. المحتوى ديني وتعليمي ولا يتضمن إعلانات أو مشتريات داخل التطبيق.',
   'settings.privacy.contactTitle': 'التواصل',
   'settings.privacy.contactBody': 'لأي استفسار يخص الخصوصية: {email}',
+  'settings.privacy.scopeNote': 'هذه الصفحة تصف ما يفعله هذا البناء تحديدًا، وتُحدَّث من إعدادات التطبيق نفسها:',
 
   /* ----------------------------------------------- settings · terms */
   'settings.terms.screenTitle': 'الشروط والاستخدام',
@@ -805,7 +866,7 @@ export const ar = {
   'error.unsupportedFeature': 'ميزة «{feature}» غير مدعومة على هذا الجهاز.',
   'error.timeout': 'استغرقت العملية وقتًا طويلًا. أعد المحاولة.',
   'error.unknown': 'حدث خطأ غير متوقع.',
-  'error.genericTitle': 'حدث خطأ',
+  'error.genericTitle': 'حدث خطأ غير متوقع',
   'error.actionFailed': 'تعذّر إتمام العملية',
   'error.withMessage': '{title}. {message}',
   'error.feature.auth': 'تسجيل الدخول',
@@ -818,7 +879,7 @@ export const ar = {
   'error.feature.sharing': 'مشاركة الصور',
   'error.feature.saveCard': 'حفظ البطاقة',
   'error.boot.fonts': 'تعذّر تحميل الخطوط. أعد تشغيل التطبيق.',
-  'error.offlineBanner': 'لا يوجد اتصال بالإنترنت. المحتوى المحفوظ يعمل بشكل طبيعي.',
+  'error.offlineBanner': 'أنت غير متصل الآن — المحتوى المحفوظ يعمل كالمعتاد.',
 
   /* --------------------------------------------------------- notFound */
   'notFound.title': 'الصفحة غير موجودة',

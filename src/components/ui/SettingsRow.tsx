@@ -6,6 +6,7 @@ import { useAppTheme } from '@/design/theme/ThemeProvider';
 import { AppText } from './AppText';
 
 import { a11yState } from '@/core/a11y/stateProps';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 export interface SettingsRowProps {
   icon?: keyof typeof Ionicons.glyphMap;
@@ -46,6 +47,7 @@ export const SettingsRow = memo(function SettingsRow({
   testID,
 }: SettingsRowProps) {
   const theme = useAppTheme();
+  const { t } = useI18n();
   const isToggle = switchValue !== undefined && Boolean(onSwitchChange);
 
   const rowStyle: StyleProp<ViewStyle> = [
@@ -124,7 +126,7 @@ export const SettingsRow = memo(function SettingsRow({
       onPress={disabled ? undefined : onPress}
       disabled={disabled || !onPress}
       accessibilityRole="button"
-      accessibilityLabel={[title, subtitle].filter(Boolean).join('، ')}
+      accessibilityLabel={[title, subtitle].filter(Boolean).join(t('common.a11ySeparator'))}
       {...a11yState({ disabled })}
       testID={testID}
       style={({ pressed }) => [rowStyle, pressed && !disabled ? { opacity: 0.6 } : null]}
@@ -179,8 +181,11 @@ export function SettingsSection({ title, description, children, footer }: Settin
 }
 
 /** Small honest badge: "تحتاج ربط الخادم" / "قريبًا". */
-export const FutureTag = memo(function FutureTag({ label = 'المرحلة القادمة' }: { label?: string }) {
+export const FutureTag = memo(function FutureTag({ label }: { label?: string }) {
   const theme = useAppTheme();
+  const { t } = useI18n();
+  // Default params cannot call hooks, so the fallback resolves in the body.
+  const text = label ?? t('common.nextStage');
   return (
     <View
       style={{
@@ -189,10 +194,10 @@ export const FutureTag = memo(function FutureTag({ label = 'المرحلة ال�
         borderRadius: theme.radii.xs,
         backgroundColor: theme.colors.accentContainer,
       }}
-      accessibilityLabel={`${label}: هذه الميزة غير مفعّلة بعد`}
+      accessibilityLabel={t('common.featureDisabledHint', { label: text })}
     >
       <AppText style={{ fontSize: 10.5, color: theme.colors.onAccentContainer }} weight="semiBold">
-        {label}
+        {text}
       </AppText>
     </View>
   );

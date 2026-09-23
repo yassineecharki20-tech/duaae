@@ -21,12 +21,12 @@ import {
   paletteOptions,
   textSizeOptions,
 } from '@/core/i18n/options';
-import { useI18n } from '@/core/i18n/I18nProvider';
 import { ACCENT_SEEDS, PALETTE_SEEDS } from '@/design/tokens/palettes';
 import type { ReadingScale } from '@/design/tokens/typography';
 import { useSettingsStore } from '@/store/settingsStore';
 import { services } from '@/services/registry';
 import { AnalyticsEvents } from '@/services/contracts/AnalyticsService';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 /**
  * Personalization.

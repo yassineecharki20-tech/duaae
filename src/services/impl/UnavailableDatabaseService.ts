@@ -2,6 +2,7 @@ import { AppError } from '@/core/errors/AppError';
 import { err, type Result } from '@/core/types/Result';
 import { logger } from '@/core/utils/logger';
 import { missingFirebaseVariables } from '@/core/config/env';
+import { translate } from '@/core/i18n/state';
 
 import type {
   BatchOperation,
@@ -19,7 +20,7 @@ function notConfigured<T>(operation: string): Result<T> {
   log.info(`${operation} requested while the database is unconfigured`);
   return err(
     AppError.notConfigured(
-      'قاعدة البيانات',
+      translate('error.feature.database'),
       `${operation} called with no Firestore backend. Missing env: ${missingFirebaseVariables().join(', ') || 'none'}`,
     ),
   );
@@ -57,7 +58,7 @@ export class UnavailableDatabaseService implements DatabaseService {
             return notConfigured<void>(`doc(${path}/${id}).remove`);
           },
           onSnapshot(_onNext, onError) {
-            onError(AppError.notConfigured('قاعدة البيانات', `doc(${path}/${id}).onSnapshot`));
+            onError(AppError.notConfigured(translate('error.feature.database'), `doc(${path}/${id}).onSnapshot`));
             return () => undefined;
           },
         };
@@ -67,7 +68,7 @@ export class UnavailableDatabaseService implements DatabaseService {
         return notConfigured<T>(`collection(${path}).add`);
       },
       onSnapshot(_onNext, onError) {
-        onError(AppError.notConfigured('قاعدة البيانات', `collection(${path}).onSnapshot`));
+        onError(AppError.notConfigured(translate('error.feature.database'), `collection(${path}).onSnapshot`));
         return (() => undefined) as Subscription;
       },
     };

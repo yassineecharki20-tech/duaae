@@ -5,6 +5,7 @@ import { services } from '@/services/registry';
 import { useToast } from '@/components/ui/Toast';
 import { IconButton } from '@/components/ui/IconButton';
 import { AnalyticsEvents } from '@/services/contracts/AnalyticsService';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 export interface FavoriteButtonProps {
   duaId: string;
@@ -26,6 +27,7 @@ export const FavoriteButton = memo(function FavoriteButton({
   label,
   testID,
 }: FavoriteButtonProps) {
+  const { t } = useI18n();
   const isFavorite = useFavoritesStore((state) =>
     state.entries.some((entry) => entry.duaId === duaId),
   );
@@ -42,7 +44,7 @@ export const FavoriteButton = memo(function FavoriteButton({
         params: { duaId },
       });
     toast.show(
-      result.isFavorite ? 'أُضيف إلى المفضلة' : 'أُزيل من المفضلة',
+      result.isFavorite ? t('duas.favorite.added') : t('duas.favorite.removed'),
       result.isFavorite ? 'success' : 'info',
     );
   }, [duaId, toggle, toast]);
@@ -51,8 +53,8 @@ export const FavoriteButton = memo(function FavoriteButton({
     <IconButton
       icon={isFavorite ? 'heart' : 'heart-outline'}
       onPress={onPress}
-      accessibilityLabel={isFavorite ? 'إزالة من المفضلة' : 'إضافة إلى المفضلة'}
-      accessibilityHint="يُحفظ على جهازك"
+      accessibilityLabel={isFavorite ? t('duas.favorite.remove') : t('duas.favorite.add')}
+      accessibilityHint={t('duas.favorite.hint')}
       tone={isFavorite ? 'danger' : 'default'}
       size={size}
       iconSize={iconSize}

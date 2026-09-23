@@ -1,9 +1,13 @@
 import type { Dua, SourceReference } from '@/core/types/domain';
+import { translate, translatePlural } from '@/core/i18n/state';
 
 /** Human-readable source line, e.g. `صحيح البخاري ٦٣٠٦` or `القرآن الكريم — البقرة ٢٥`. */
 export function formatSource(reference: SourceReference): string {
   if (reference.quran) {
-    return `${reference.book} — سورة ${reference.quran.surah}، الآية ${reference.quran.ayah}`;
+    return translate('duas.source.quranFull', {
+      surah: reference.quran.surah,
+      ayah: reference.quran.ayah,
+    });
   }
   const parts = [reference.book];
   if (reference.number) parts.push(reference.number);
@@ -35,16 +39,16 @@ export function buildShareText(dua: Dua, options: ShareTextOptions = {}): string
   if (dua.title) blocks.push(`﴿ ${dua.title} ﴾`);
   blocks.push(dua.text);
 
-  if (dua.virtue) blocks.push(`فضله: ${dua.virtue}`);
+  if (dua.virtue) blocks.push(translate('duas.virtueLabel', { text: dua.virtue }));
 
   const meta: string[] = [];
   if (categoryTitle) meta.push(categoryTitle);
-  if (dua.sources.length > 0) meta.push(`المصدر: ${formatSources(dua)}`);
-  if (dua.repeat > 1) meta.push(`يُقال ${dua.repeat} مرات`);
+  if (dua.sources.length > 0) meta.push(translate('duas.source.label', { text: formatSources(dua) }));
+  if (dua.repeat > 1) meta.push(translatePlural('duas.repeatTimes', dua.repeat));
   if (meta.length > 0) blocks.push(meta.join(' — '));
 
   if (includeBranding) {
-    blocks.push('—\nدعاء | DUAA');
+    blocks.push(`—\n${translate('share.branding')}`);
   }
 
   return blocks.join('\n\n');

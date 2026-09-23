@@ -87,6 +87,14 @@ export interface ColorTokens {
   tabInactive: string;
 }
 
+/**
+ * Lightest text tone that still passes WCAG AA (4.5:1) on both the ivory
+ * background and the white surface. It is `ink[300]` nudged darker: same hue,
+ * same role, readable — metadata, source lines and inactive tab labels are
+ * information, not decoration.
+ */
+const SUBTLE_INK = '#66716C';
+
 export const lightColors: ColorTokens = {
   primary: emerald[700],
   primaryPressed: emerald[800],
@@ -114,12 +122,12 @@ export const lightColors: ColorTokens = {
   surfaceOverlay: 'rgba(253,252,248,0.96)',
   onSurface: ink[800],
   onSurfaceMuted: ink[500],
-  onSurfaceSubtle: ink[300],
+  onSurfaceSubtle: SUBTLE_INK,
   onSurfaceInverse: ivory[50],
 
   text: ink[800],
   textMuted: ink[500],
-  textSubtle: ink[300],
+  textSubtle: SUBTLE_INK,
   textInverse: ivory[50],
   textLink: emerald[700],
   textScripture: ink[900],
@@ -153,7 +161,7 @@ export const lightColors: ColorTokens = {
   tabBar: 'rgba(253,252,248,0.94)',
   tabBarBorder: ivory[300],
   tabActive: emerald[700],
-  tabInactive: ink[300],
+  tabInactive: SUBTLE_INK,
 };
 
 export const darkColors: ColorTokens = {
@@ -183,12 +191,12 @@ export const darkColors: ColorTokens = {
   surfaceOverlay: 'rgba(13,26,22,0.96)',
   onSurface: '#EDF3F0',
   onSurfaceMuted: '#A6B7B0',
-  onSurfaceSubtle: '#71857E',
+  onSurfaceSubtle: '#758881',
   onSurfaceInverse: night[900],
 
   text: '#EEF4F1',
   textMuted: '#A2B4AD',
-  textSubtle: '#71857E',
+  textSubtle: '#758881',
   textInverse: ink[900],
   textLink: emerald[300],
   textScripture: '#F6FAF8',
@@ -222,7 +230,7 @@ export const darkColors: ColorTokens = {
   tabBar: 'rgba(10,21,18,0.94)',
   tabBarBorder: night[700],
   tabActive: emerald[300],
-  tabInactive: '#6E827B',
+  tabInactive: '#758881',
 };
 
 export const colorSchemes = {

@@ -3,6 +3,7 @@ import { err, ok, type Result } from '@/core/types/Result';
 import { logger } from '@/core/utils/logger';
 import { missingFirebaseVariables } from '@/core/config/env';
 import type { AppUser, AuthProvider } from '@/core/types/domain';
+import { translate } from '@/core/i18n/state';
 
 import type {
   AuthCredentials,
@@ -36,7 +37,7 @@ export class UnavailableAuthService implements AuthService {
     user: null,
   };
 
-  constructor(private readonly featureName = 'تسجيل الدخول') {}
+  constructor(private readonly featureName = translate('error.feature.auth')) {}
 
   private unavailable<T>(action: string): Result<T> {
     const missing = missingFirebaseVariables();

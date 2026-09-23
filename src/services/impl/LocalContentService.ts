@@ -16,6 +16,7 @@ import {
   SESSION_BY_KEY,
 } from '@/data/content';
 import { searchDuas } from '@/features/search/searchEngine';
+import { translate } from '@/core/i18n/state';
 
 import type { ContentService } from '../contracts/ContentService';
 
@@ -79,7 +80,7 @@ export class LocalContentService implements ContentService {
   async getAdjacentDuas(duaId: string): Promise<Result<{ previous: Dua | null; next: Dua | null }>> {
     const current = DUA_BY_ID.get(duaId);
     if (!current) {
-      return { ok: false, error: AppError.notFound('الدعاء', `getAdjacentDuas(${duaId})`) };
+      return { ok: false, error: AppError.notFound(translate('error.feature.dua'), `getAdjacentDuas(${duaId})`) };
     }
     const siblings = DUAS_BY_CATEGORY.get(current.categoryId) ?? [];
     const index = siblings.findIndex((item) => item.id === duaId);

@@ -15,6 +15,7 @@ import { IconButton } from '@/components/ui/IconButton';
 import { useContentStore } from '@/store/contentStore';
 import { useFavoritesStore } from '@/store/favoritesStore';
 import { CONTENT_STATS } from '@/data/content';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 /**
  * الأدعية — the browsing hub.
@@ -24,6 +25,7 @@ import { CONTENT_STATS } from '@/data/content';
  */
 export default function DuasScreen() {
   const theme = useAppTheme();
+  const { t } = useI18n();
   const status = useContentStore((state) => state.status);
   const categories = useContentStore((state) => state.categories);
   const error = useContentStore((state) => state.error);
@@ -36,19 +38,19 @@ export default function DuasScreen() {
     <Screen scroll edges={['top', 'left', 'right']} testID="duas-screen">
       <View style={{ marginHorizontal: -theme.layout.screenGutter }}>
         <AppHeader
-          title="الأدعية والأذكار"
-          subtitle={`${CONTENT_STATS.duaCount} نصًّا موثّقًا`}
+          title={t('duas.screenTitle')}
+          subtitle={t('duas.documentedCount', { count: CONTENT_STATS.duaCount })}
           canGoBack={false}
           actions={
             <>
               <IconButton
                 icon="heart-outline"
-                accessibilityLabel="المفضلة"
+                accessibilityLabel={t('duas.favorites')}
                 onPress={() => router.push('/favorites')}
               />
               <IconButton
                 icon="search-outline"
-                accessibilityLabel="بحث"
+                accessibilityLabel={t('common.search')}
                 onPress={() => router.push('/search')}
               />
             </>
@@ -63,7 +65,7 @@ export default function DuasScreen() {
           <Card variant="outline" padding={theme.spacing.md} onPress={() => router.push('/favorites')}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing.sm }}>
               <AppText tone="muted" style={{ fontSize: 13 }}>
-                لديك {favoriteCount} دعاءً في المفضلة
+                {t('duas.favoritesNote', { count: favoriteCount })}
               </AppText>
             </View>
           </Card>
@@ -84,13 +86,13 @@ export default function DuasScreen() {
             ))}
           </>
         ) : status === 'error' ? (
-          <ErrorState error={error} onRetry={() => void hydrate()} title="تعذّر تحميل التصنيفات" />
+          <ErrorState error={error} onRetry={() => void hydrate()} title={t('category.loadFailed')} />
         ) : (
           sorted.map((category) => <CategoryCard key={category.id} category={category} />)
         )}
 
         <AppText tone="subtle" style={{ fontSize: 12, paddingBottom: theme.spacing.xl }}>
-          كل نص في دعاء منسوب إلى مصدره المطبوع. المحتوى مخزّن على جهازك ويعمل دون إنترنت.
+          {t('duas.footnote')}
         </AppText>
       </View>
     </Screen>

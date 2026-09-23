@@ -18,6 +18,9 @@ export const en: MessageCatalog = {
   'app.name': 'DUAA',
   'app.nameFull': 'DUAA | دعاء',
   'app.tagline': 'Your daily companion for remembrance',
+  'app.booting': 'Starting DUAA',
+  'app.logoA11y': 'DUAA logo',
+  'app.logoWordmarkA11y': 'DUAA — full logo',
 
   /* ------------------------------------------------------------- common */
   'common.cancel': 'Cancel',
@@ -58,6 +61,9 @@ export const en: MessageCatalog = {
   'common.add': 'Add',
   'common.openSettings': 'Open settings',
   'common.checkConnection': 'Check connection',
+  'common.showAll': 'Show all',
+  'common.details': 'Details',
+  'common.a11ySeparator': ', ',
 
   /* ---------------------------------------------------------------- nav */
   'nav.tab.home': 'Home',
@@ -113,6 +119,14 @@ export const en: MessageCatalog = {
   'home.sessionNow': 'It’s time',
   'home.sessionAnnouncement': '{title} — it’s time',
   'home.recentEmpty': 'You haven’t opened any dua yet',
+  'home.shortcuts': 'Shortcuts',
+  'home.todayAzkar': 'Today’s adhkar',
+  'home.openToStart': 'Open to start',
+  'home.contentLoadFailed': 'Could not load the content. Retry from settings.',
+  'home.titleGreeting': 'Assalamu alaikum 👋',
+  'home.titleGreetingNamed': 'Assalamu alaikum {name} 👋',
+  'home.libraryFootnote': '{count} sourced duas and adhkar — fully available offline.',
+  'home.categoriesTitle': 'Browse duas',
 
   /* --------------------------------------------------------- categories */
   'category.screenTitle': 'Category',
@@ -151,6 +165,11 @@ export const en: MessageCatalog = {
   'category.session.morning': 'Morning adhkar',
   'category.session.evening': 'Evening adhkar',
   'category.session.sleep': 'Bedtime adhkar',
+  'category.openingSession': 'Opening the adhkar session…',
+  'category.itemsValue': '{count} dhikr',
+  'category.itemsValue.one': '{count} dhikr',
+  'category.itemsValue.two': '{count} dhikr',
+  'category.itemsValue.few': '{count} dhikr',
 
   /* -------------------------------------------------------------- duas */
   'duas.screenTitle': 'Duas and adhkar',
@@ -168,6 +187,9 @@ export const en: MessageCatalog = {
   'duas.source.label': 'Source: {text}',
   'duas.source.quranFull': 'Qur’an — Surah {surah}, verse {ayah}',
   'duas.virtueLabel': 'Virtue: {text}',
+  'duas.footnote': 'Every text in DUAA is attributed to its printed source. The content is stored on your device and works offline.',
+  'duas.favoritesNote': 'You have {count} duas in favorites',
+  'duas.source.title': 'Source',
 
   /* ------------------------------------------------------------ reader */
   'reader.title': 'Dua',
@@ -209,6 +231,11 @@ export const en: MessageCatalog = {
   'azkar.tasbeeh': 'Tasbih',
   'azkar.counterDone': 'Done — {target} of {target}',
   'azkar.counterTap': 'Tap to repeat — {current} of {target}',
+  'azkar.sessionDoneNamed': '{title} adhkar completed — may Allah accept',
+  'azkar.headerSummary': '{duas} dhikr · {repeats} repetitions',
+  'azkar.longest': 'Longest: {count}',
+  'azkar.wellDone': 'Well done. What next?',
+  'azkar.tapHint': 'Tap the dhikr text to count a repetition. Progress belongs to the day and resets automatically at midnight.',
 
   /* ----------------------------------------------------------- tasbeeh */
   'tasbeeh.screenTitle': 'Tasbih',
@@ -243,10 +270,21 @@ export const en: MessageCatalog = {
   'tasbeeh.targetReached': '{target} reached — may Allah bless you',
   'tasbeeh.a11y.counter': 'Tasbih counter — {value} of {target}',
   'tasbeeh.a11y.counterHint': 'Tap to increase the counter',
+  'tasbeeh.quickAzkar': 'Quick adhkar',
+  'tasbeeh.totalValue': 'Total: {count}',
+  'tasbeeh.roundsValue': 'Rounds: {count}',
+  'tasbeeh.targetValue': 'Target: {count}',
+  'tasbeeh.todayTotal': 'Your tasbih total: {count}',
+  'tasbeeh.itemSummary': '{count} tasbih · {section}',
+  'tasbeeh.ofTarget': 'of {target}',
 
   /* --------------------------------------------------------- favorites */
   'favorites.screenTitle': 'Favorites',
   'favorites.countSummary': '{count} saved duas',
+  'favorites.missingItems': '{count} saved items point to a text missing from this bundle.',
+  'favorites.missingItems.one': '{count} saved item points to a text missing from this bundle.',
+  'favorites.missingItems.two': '{count} saved items point to a text missing from this bundle.',
+  'favorites.missingItems.few': '{count} saved items point to a text missing from this bundle.',
   'favorites.emptyTitle': 'No saved duas',
   'favorites.emptyBody':
     'Tap the heart beside any dua to save it here. Favorites stay on your device, even after you close the app.',
@@ -311,6 +349,7 @@ export const en: MessageCatalog = {
   'search.match.keyword': 'In the keywords',
   'search.match.category': 'In the category',
   'search.match.source': 'In the source',
+  'search.matchLine': 'Matched in {where} · {category}',
   'search.suggest.morning': 'Morning',
   'search.suggest.rizq': 'Provision',
   'search.suggest.forgiveness': 'Forgiveness',
@@ -365,6 +404,10 @@ export const en: MessageCatalog = {
   'community.plan.moderationBody':
     'Every religious text is reviewed before publication, and any post can be reported.',
   'community.publishDisabled': 'Publishing requires the accounts service — next stage',
+  'community.whatYouCanDoNow': 'What you can do now:',
+  'community.whatArrivesAtLaunch': 'What will be available at launch?',
+  'community.shareDuaNow': 'Share a dua now',
+  'community.emptyBodyHonest': '{message} You will find no demo data or fake posts here — we prefer an honest page until it is complete.',
 
   /* ----------------------------------------------------------- profile */
   'profile.screenTitle': 'Profile',
@@ -405,6 +448,13 @@ export const en: MessageCatalog = {
   'profile.preference.home': 'Home screen',
   'profile.preference.reading': 'Reading',
   'profile.preference.widget': 'Widget',
+  'profile.appSubtitle': 'DUAA — offline, no ads, no tracking.',
+  'profile.yourStats': 'Your stats',
+  'profile.signInNotEnabled': 'Sign-in is not enabled yet',
+  'profile.accountReadyNote': 'The accounts service is ready in the code, but it is waiting for Firebase Auth to be connected. Until then your profile, stats and favorites stay on this device only — and the app will never show a fake sign-in button.',
+  'profile.currentStreakValue': 'Current streak: {count} days',
+  'profile.longestStreakValue': 'Longest streak: {count} days',
+  'profile.detailsArrow': 'Details →',
 
   /* ---------------------------------------------------------- settings */
   'settings.screenTitle': 'Settings',
@@ -569,6 +619,8 @@ export const en: MessageCatalog = {
   'settings.notifications.notEnabled': 'Not enabled',
   'settings.notifications.invalidTimeShort': 'Invalid time',
   'settings.notifications.tomorrow': 'Tomorrow',
+  'settings.notifications.stageNote': 'At this stage DUAA saves and validates your times and preferences on the device, but it does not register notifications with the operating system. Once the notification service is connected, this same screen will work unchanged, with no design change.',
+  'settings.notifications.currentTime': 'Current time: {time}',
 
   /* --------------------------------------------- settings · widget */
   'settings.widget.screenTitle': 'Widget',
@@ -643,6 +695,9 @@ export const en: MessageCatalog = {
     'Your preferences are stored on the device and will sync with your account once the accounts service is available.',
   'settings.account.prefsSyncUnavailable': 'Sync unavailable — no account linked',
   'settings.account.prefsSyncedAt': 'Last synced: {date}',
+  'settings.account.signedInWithEmail': 'Signed in — {email}',
+  'settings.account.contactSupport': 'For account or data questions: {email}',
+  'settings.account.deleteBody': 'Your account and the data linked to it will be deleted from the server. Data stored on your device is removed from “Settings ▸ Reset local data”.',
 
   /* ------------------------------------------------ settings · about */
   'settings.about.screenTitle': 'About',
@@ -675,6 +730,9 @@ export const en: MessageCatalog = {
   'settings.about.analyticsOff': 'Disabled — no events are sent',
   'settings.about.withAnalytics': 'With analytics enabled',
   'settings.about.withoutAnalytics': 'Without analytics',
+  'settings.about.contentDuasValue': '{count} texts',
+  'settings.about.contact': 'Contact: {email}',
+  'settings.about.analyticsService': 'Current support service: {state}',
   'settings.about.backend.content': 'Content (duas and adhkar)',
   'settings.about.backend.contentDetail': 'Bundled locally — works offline',
   'settings.about.backend.favorites': 'Favorites',
@@ -693,6 +751,8 @@ export const en: MessageCatalog = {
   'settings.about.backend.analyticsOn': 'Enabled',
   'settings.about.backend.analyticsOff': 'Disabled',
   'settings.about.backend.haptics': 'Haptics',
+  'settings.about.appDescription': 'A duas and adhkar app that works offline, with no ads and no tracking. Every text is attributed to its printed source.',
+  'settings.about.noGeneratedText': 'The app adds no automatically generated text and nothing from unreliable sources. Anything whose source or grading is unknown is not published.',
 
   /* --------------------------------------------- settings · privacy */
   'settings.privacy.screenTitle': 'Privacy policy',
@@ -731,6 +791,7 @@ export const en: MessageCatalog = {
     'The app is intended for a general audience and does not knowingly collect data from children. The content is religious and educational, with no advertising and no in-app purchases.',
   'settings.privacy.contactTitle': 'Contact',
   'settings.privacy.contactBody': 'For any privacy question: {email}',
+  'settings.privacy.scopeNote': 'This page describes exactly what this build does, and it is kept up to date from the app’s own settings:',
 
   /* ----------------------------------------------- settings · terms */
   'settings.terms.screenTitle': 'Terms of use',

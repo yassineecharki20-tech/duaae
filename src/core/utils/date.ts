@@ -5,6 +5,9 @@
  * across restarts and identical on every device for the same date.
  */
 
+import { getLanguage, localeTagFor, translate, translatePlural } from '@/core/i18n/state';
+import type { AppLanguage } from '@/core/types/domain';
+
 /** `YYYY-MM-DD` in local time — the canonical day key. */
 export function dayKey(date: Date = new Date()): string {
   const year = date.getFullYear();
@@ -53,15 +56,15 @@ export function getGreeting(date: Date = new Date()): string {
   switch (getDayPart(date)) {
     case 'night':
     case 'fajr':
-      return 'صباح الخير';
+      return translate('home.greetingMorning');
     case 'morning':
     case 'noon':
-      return 'صباح الخير';
+      return translate('home.greetingMorning');
     case 'afternoon':
     case 'evening':
-      return 'مساء الخير';
+      return translate('home.greetingEvening');
     default:
-      return 'السلام عليكم';
+      return translate('home.greetingDefault');
   }
 }
 
@@ -88,22 +91,22 @@ export function formatTime(value: string): string {
   const total = ((minutes % 1440) + 1440) % 1440;
   const h24 = Math.floor(total / 60);
   const mm = `${total % 60}`.padStart(2, '0');
-  const period = h24 < 12 ? 'ص' : 'م';
+  const period = h24 < 12 ? translate('date.am') : translate('date.pm');
   const h12 = h24 % 12 === 0 ? 12 : h24 % 12;
   return `${h12}:${mm} ${period}`;
 }
 
-/** Human relative label in Arabic: "اليوم", "أمس", "قبل ٣ أيام", ... */
+/** Human relative label in the active language: today, yesterday, 3 days ago… */
 export function formatRelativeDay(isoDate: string, now: Date = new Date()): string {
   const then = new Date(isoDate);
   if (Number.isNaN(then.getTime())) return '';
   const diffDays = Math.round((dayStartOf(now).getTime() - dayStartOf(then).getTime()) / 86_400_000);
-  if (diffDays === 0) return 'اليوم';
-  if (diffDays === 1) return 'أمس';
-  if (diffDays < 0) return 'قريبًا';
-  if (diffDays < 7) return `قبل ${diffDays} أيام`;
-  if (diffDays < 30) return `قبل ${Math.floor(diffDays / 7)} أسابيع`;
-  return then.toLocaleDateString('ar', { year: 'numeric', month: 'long', day: 'numeric' });
+  if (diffDays === 0) return translate('date.today');
+  if (diffDays === 1) return translate('date.yesterday');
+  if (diffDays < 0) return translate('date.soon');
+  if (diffDays < 7) return translatePlural('date.daysAgo', diffDays);
+  if (diffDays < 30) return translatePlural('date.weeksAgo', Math.floor(diffDays / 7));
+  return formatLongDate(isoDate);
 }
 
 function dayStartOf(date: Date): Date {
@@ -131,4 +134,18 @@ export function addMinutesToTime(time: string, delta: number): string {
   const minutes = parseTimeToMinutes(time) ?? 0;
   const total = (((minutes + delta) % 1440) + 1440) % 1440;
   return `${`${Math.floor(total / 60)}`.padStart(2, '0')}:${`${total % 60}`.padStart(2, '0')}`;
+}
+
+/**
+ * Full date in the active language (`12 septembre 2026`, `١٢ سبتمبر ٢٠٢٦`, …).
+ * Used where a document date is shown, e.g. the terms "last updated" line.
+ */
+export function formatLongDate(iso: string, language: AppLanguage = getLanguage()): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return iso;
+  return date.toLocaleDateString(localeTagFor(language), {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 }

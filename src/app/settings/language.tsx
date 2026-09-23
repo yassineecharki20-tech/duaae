@@ -12,12 +12,12 @@ import { SettingsRow, SettingsSection } from '@/components/ui/SettingsRow';
 import { useToast } from '@/components/ui/Toast';
 
 import { languageOptions } from '@/core/i18n/options';
-import { useI18n } from '@/core/i18n/I18nProvider';
 import type { MessageKey } from '@/core/i18n/messages/ar';
 import type { AppLanguage } from '@/core/types/domain';
 import { selectLanguage, selectRestartNeeded, useSettingsStore } from '@/store/settingsStore';
 import { services } from '@/services/registry';
 import { AnalyticsEvents } from '@/services/contracts/AnalyticsService';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 /** Native names are always shown in their own language, whatever is selected. */
 const NATIVE_NAME_KEY = {

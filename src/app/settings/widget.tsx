@@ -11,11 +11,11 @@ import { Segmented } from '@/components/ui/Controls';
 import { SettingsSection } from '@/components/ui/SettingsRow';
 import { useToast } from '@/components/ui/Toast';
 
-import { useI18n } from '@/core/i18n/I18nProvider';
 import { widgetContentOptions } from '@/core/i18n/options';
 import { useSettingsStore } from '@/store/settingsStore';
 import { services } from '@/services/registry';
 import { AnalyticsEvents } from '@/services/contracts/AnalyticsService';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 const WIDGET_SIZE_OPTIONS = [
   { value: 'small', labelKey: 'settings.widget.size.small' },

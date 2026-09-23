@@ -11,6 +11,8 @@ import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { DuaaMark } from '@/components/brand/DuaaLogo';
 import { Illustration, type IllustrationKind } from '@/components/onboarding/Illustration';
+import { useI18n } from '@/core/i18n/I18nProvider';
+import type { Translate } from '@/core/i18n/options';
 
 interface Slide {
   id: string;
@@ -19,32 +21,35 @@ interface Slide {
   illustration: IllustrationKind;
 }
 
-const SLIDES: Slide[] = [
+/** Built per render so the slides follow the active language. */
+function buildSlides(t: Translate): Slide[] {
+  return [
   {
     id: 'rhythm',
-    title: 'اجعل الذكر جزءًا من يومك',
-    description: 'أذكار الصباح والمساء والنوم، مرتّبة وميسّرة، لتبدأ يومك وتُتمّه بطمأنينة.',
+    title: t('onboarding.slide1.title'),
+    description: t('onboarding.slide1.body'),
     illustration: 'rhythm',
   },
   {
     id: 'library',
-    title: 'أدعية وأذكار في مكان واحد',
-    description: 'مكتبة موثّقة من القرآن والسنة مع المصدر لكل دعاء — وتعمل بالكامل دون إنترنت.',
+    title: t('onboarding.slide2.title'),
+    description: t('onboarding.slide2.body'),
     illustration: 'library',
   },
   {
     id: 'reminder',
-    title: 'تذكيرات تساعدك على الاستمرار',
-    description: 'اختر أوقات أذكارك، واحتفظ بسجلّ أيامك وسلسلة ذكرك المتصلة.',
+    title: t('onboarding.slide3.title'),
+    description: t('onboarding.slide3.body'),
     illustration: 'reminder',
   },
   {
     id: 'share',
-    title: 'شارك الخير مع الآخرين',
-    description: 'أرسل الدعاء نصًّا أو بطاقة أنيقة تحمل شعار دعاء، بضغطة واحدة.',
+    title: t('onboarding.slide4.title'),
+    description: t('onboarding.slide4.body'),
     illustration: 'share',
   },
-];
+  ];
+}
 
 /**
  * Onboarding — four swipeable slides.
@@ -56,17 +61,19 @@ const SLIDES: Slide[] = [
  */
 export default function OnboardingScreen() {
   const theme = useAppTheme();
+  const { t } = useI18n();
+  const slides = useMemo(() => buildSlides(t), [t]);
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const [translate] = useState(() => new Animated.Value(0));
   const complete = useOnboardingStore((state) => state.complete);
 
-  const isLast = index === SLIDES.length - 1;
+  const isLast = index === slides.length - 1;
 
   const goTo = useCallback(
     (next: number, animated = true) => {
-      const clamped = Math.max(0, Math.min(SLIDES.length - 1, next));
+      const clamped = Math.max(0, Math.min(slides.length - 1, next));
       setIndex(clamped);
       const target = -clamped * width;
       if (animated && !theme.reduceMotion) {
@@ -121,12 +128,12 @@ export default function OnboardingScreen() {
           <Pressable
             onPress={finish}
             accessibilityRole="button"
-            accessibilityLabel="تخطي المقدمة"
+            accessibilityLabel={t('onboarding.skip')}
             hitSlop={8}
             style={{ padding: theme.spacing.sm }}
           >
             <AppText tone="muted" weight="medium">
-              تخطّي
+              {t('onboarding.skip')}
             </AppText>
           </Pressable>
         )}
@@ -136,12 +143,12 @@ export default function OnboardingScreen() {
         <Animated.View
           style={{
             flexDirection: 'row',
-            width: width * SLIDES.length,
+            width: width * slides.length,
             transform: [{ translateX: translate }],
             flex: 1,
           }}
         >
-          {SLIDES.map((slide, slideIndex) => (
+          {slides.map((slide, slideIndex) => (
             <View
               key={slide.id}
               style={{
@@ -153,7 +160,12 @@ export default function OnboardingScreen() {
                 paddingHorizontal: theme.spacing.xxxl,
               }}
               accessibilityRole="summary"
-              accessibilityLabel={`الشريحة ${slideIndex + 1} من ${SLIDES.length}: ${slide.title}. ${slide.description}`}
+              accessibilityLabel={t('onboarding.slideAnnouncement', {
+                index: slideIndex + 1,
+                total: slides.length,
+                title: slide.title,
+                body: slide.description,
+              })}
             >
               <Illustration kind={slide.illustration} size={230} />
               <View style={{ gap: theme.spacing.md, alignItems: 'center' }}>
@@ -178,7 +190,7 @@ export default function OnboardingScreen() {
         }}
       >
         <View style={{ flexDirection: 'row', gap: theme.spacing.sm }} accessibilityElementsHidden>
-          {SLIDES.map((slide, slideIndex) => (
+          {slides.map((slide, slideIndex) => (
             <View
               key={slide.id}
               style={{
@@ -195,22 +207,22 @@ export default function OnboardingScreen() {
         <View style={{ flexDirection: 'row', gap: theme.spacing.sm, width: '100%', maxWidth: 420 }}>
           {index > 0 ? (
             <Button
-              label="السابق"
+              label={t('common.previous')}
               variant="ghost"
               onPress={() => goTo(index - 1)}
-              accessibilityLabel="الشريحة السابقة"
+              accessibilityLabel={t('onboarding.a11y.previousSlide')}
             />
           ) : null}
           <View style={{ flex: 1 }}>
             {isLast ? (
-              <Button label="ابدأ الآن" onPress={finish} fullWidth size="lg" testID="onboarding-start" />
+              <Button label={t('onboarding.start')} onPress={finish} fullWidth size="lg" testID="onboarding-start" />
             ) : (
               <Button
-                label="التالي"
+                label={t('common.next')}
                 onPress={() => goTo(index + 1)}
                 fullWidth
                 size="lg"
-                accessibilityLabel="الشريحة التالية"
+                accessibilityLabel={t('onboarding.a11y.nextSlide')}
               />
             )}
           </View>

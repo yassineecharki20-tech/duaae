@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -12,25 +13,36 @@ import { FutureTag } from '@/components/ui/SettingsRow';
 import { EmptyState, LoadingState, ErrorState, OfflineBanner } from '@/components/ui/StateViews';
 
 import { useCommunityFeed } from '@/features/community/useCommunityFeed';
+import { useI18n } from '@/core/i18n/I18nProvider';
+import type { Translate } from '@/core/i18n/options';
 
 /** What the community stage will add — stated as a roadmap, never as data. */
-const UPCOMING: readonly { icon: keyof typeof Ionicons.glyphMap; title: string; body: string }[] = [
+interface UpcomingItem {
+  icon: keyof typeof Ionicons.glyphMap;
+  title: string;
+  body: string;
+}
+
+/** Built per render so the roadmap copy follows the active language. */
+function buildUpcoming(t: Translate): UpcomingItem[] {
+  return [
   {
     icon: 'chatbubbles-outline',
-    title: 'مشاركات الأدعية',
-    body: 'انشر دعاءً من المفضلة مع تعليقك، ويتصفحه الآخرون ويحفظونه.',
+    title: t('community.plan.sharing'),
+    body: t('community.plan.sharingBody'),
   },
   {
     icon: 'heart-outline',
-    title: 'تفاعل وحفظ',
-    body: 'إعجابات وحفظ للمنشورات، مرتبطة بحسابك بعد تفعيل تسجيل الدخول.',
+    title: t('community.plan.reactions'),
+    body: t('community.plan.reactionsBody'),
   },
   {
     icon: 'shield-checkmark-outline',
-    title: 'إشراف ومراجعة',
-    body: 'كل نص ديني يمر على مراجعة قبل النشر؛ الإبلاغ متاح لأي محتوى.',
+    title: t('community.plan.moderation'),
+    body: t('community.plan.moderationBody'),
   },
-];
+  ];
+}
 
 /**
  * المجتمع — honest empty state.
@@ -42,33 +54,35 @@ const UPCOMING: readonly { icon: keyof typeof Ionicons.glyphMap; title: string; 
  */
 export default function CommunityScreen() {
   const theme = useAppTheme();
+  const { t } = useI18n();
+  const upcoming = useMemo(() => buildUpcoming(t), [t]);
   const { status, error, refresh, isConfigured } = useCommunityFeed();
 
   return (
     <Screen scroll edges={['top', 'left', 'right']} testID="community-screen">
       <View style={{ marginHorizontal: -theme.layout.screenGutter }}>
-        <AppHeader title="المجتمع" subtitle="تشارك الأدعية مع الآخرين" canGoBack={false} />
+        <AppHeader title={t('community.screenTitle')} subtitle={t('community.subtitle')} canGoBack={false} />
       </View>
 
       <View style={{ paddingTop: theme.spacing.lg, gap: theme.spacing.lg }}>
         <OfflineBanner />
 
         {status === 'loading' ? (
-          <LoadingState label="جارٍ الاتصال بخدمة المجتمع…" />
+          <LoadingState label={t('community.loading')} />
         ) : status === 'error' ? (
-          <ErrorState error={error} onRetry={refresh} title="تعذّر تحميل المشاركات" />
+          <ErrorState error={error} onRetry={refresh} title={t('community.loadFailed')} />
         ) : (
           <EmptyState
             icon="people-outline"
-            title="المجتمع لم يُطلق بعد"
+            title={t('community.emptyTitle')}
             description={
               isConfigured
-                ? 'لا توجد مشاركات منشورة حتى الآن.'
-                : `${
-                    error?.userMessage ?? 'ميزة المجتمع غير مُفعّلة في هذه المرحلة.'
-                  } لن تجد هنا بيانات تجريبية أو منشورات وهمية — نفضّل أن تبقى الصفحة صادقة حتى تكتمل.`
+                ? t('community.emptyBody')
+                : t('community.emptyBodyHonest', {
+                    message: error?.userMessage ?? t('community.comingSoonBody'),
+                  })
             }
-            actionLabel="شارك دعاءً الآن"
+            actionLabel={t('community.shareDuaNow')}
             onAction={() => router.push('/favorites')}
           />
         )}
@@ -76,10 +90,10 @@ export default function CommunityScreen() {
         <Card variant="outline" padding={theme.spacing.lg}>
           <View style={{ gap: theme.spacing.md }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing.sm }}>
-              <AppText weight="semiBold">ما الذي سيتوفر عند الإطلاق؟</AppText>
+              <AppText weight="semiBold">{t('community.whatArrivesAtLaunch')}</AppText>
               <FutureTag />
             </View>
-            {UPCOMING.map((item) => (
+            {upcoming.map((item) => (
               <View key={item.title} style={{ flexDirection: 'row', gap: theme.spacing.md }}>
                 <Ionicons name={item.icon} size={18} color={theme.colors.accent} style={{ marginTop: 3 }} />
                 <View style={{ flex: 1, gap: 2 }}>
@@ -97,10 +111,10 @@ export default function CommunityScreen() {
 
         <View style={{ gap: theme.spacing.sm, paddingBottom: theme.spacing.xl }}>
           <AppText tone="muted" style={{ fontSize: 13 }}>
-            ما يمكنك فعله الآن:
+            {t('community.whatYouCanDoNow')}
           </AppText>
-          <Button variant="outline" size="md" accessibilityLabel="مشاركة دعاء كبطاقة" onPress={() => router.push('/dua/today')} label="شارك دعاء اليوم كبطاقة" />
-          <Button variant="ghost" size="md" accessibilityLabel="فتح المفضلة" onPress={() => router.push('/favorites')} label="مفضلتي" />
+          <Button variant="outline" size="md" accessibilityLabel={t('community.shareDailyCardTitle')} onPress={() => router.push('/dua/today')} label={t('community.shareDailyCard')} />
+          <Button variant="ghost" size="md" accessibilityLabel={t('community.openFavoritesTitle')} onPress={() => router.push('/favorites')} label={t('community.openFavorites')} />
         </View>
       </View>
     </Screen>

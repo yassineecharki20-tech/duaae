@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { View } from 'react-native';
 
 import { useAppTheme } from '@/design/theme/ThemeProvider';
@@ -8,78 +9,96 @@ import { Card } from '@/components/ui/Card';
 
 import { config } from '@/core/config/env';
 import { CONTENT_STATS } from '@/data/content';
+import { useI18n } from '@/core/i18n/I18nProvider';
+import type { Translate } from '@/core/i18n/options';
+import { formatLongDate } from '@/core/utils/date';
 
 interface Clause {
   title: string;
   body: string[];
 }
 
-const CLAUSES: readonly Clause[] = [
-  {
-    title: 'طبيعة المحتوى',
-    body: [
-      'دعاء تطبيق عرض للأدعية والأذكار المأثورة مع مصادرها، وليس جهة إفتاء. لا يقدم التطبيق فتاوى ولا أحكامًا شرعية ولا يستبدل استشارة أهل العلم.',
-      'الآيات القرآنية تُعرض كما وردت في المصحف، والأحاديث تُنسب إلى مجموعاتها المطبوعة مع درجتها عند توفّرها.',
-    ],
-  },
-  {
-    title: 'سياسة المصادر — لا نص بلا مرجع',
-    body: [
-      'كل نص في التطبيق مأخوذ من مصدر مطبوع معروف: القرآن الكريم، صحيح البخاري، صحيح مسلم، سنن أبي داود والترمذي والنسائي وابن ماجه، وحصن المسلم لسعيد بن علي بن وهف القحطاني.',
-      'لا يُضاف أي نص من توليد آلي، ولا يُنسب أي قول إلى النبي ﷺ دون مصدر، ولا تُذكر درجة (صحيح/حسن) دون مرجع.',
-      'عند اختلاف الروايات يُعتمد اللفظ الأشهر في حصن المسلم، ويُذكر المصدر كما هو دون تصرّف في النص.',
-      `الإصدار الحالي للمحتوى: ${CONTENT_STATS.version} — ${CONTENT_STATS.duaCount} نصًّا في ${CONTENT_STATS.categoryCount} تصنيفًا.`,
-    ],
-  },
-  {
-    title: 'الاستخدام المقبول',
-    body: [
-      'يحق لك استخدام التطبيق ونسخ أدعيته ومشاركتها بحرية، بما في ذلك بطاقات المشاركة التي ينشئها التطبيق.',
-      'لا يجوز نسب المحتوى إلى غير مصادره، أو تعديل النصوص الشرعية ثم نشرها باسم التطبيق، أو استخدام التطبيق لنشر ما يخالف أحكام الشريعة أو القانون.',
-    ],
-  },
-  {
-    title: 'المجتمع (عند تفعيله)',
-    body: [
-      'ميزة المجتمع غير مُفعّلة في هذا البناء ولن تُفعّل قبل توفير خدمة حسابات وآلية إشراف.',
-      'عند تفعيلها: كل منشور يخالف سياسة المصادر أو يتضمن إساءة يُحذف، ويحق للمستخدم الإبلاغ عن أي محتوى.',
-    ],
-  },
-  {
-    title: 'الإخلاء من المسؤولية',
-    body: [
-      'الأدعية المتعلقة بالشفاء أو الرزق أو قضاء الحاجة هي أدعية مأثورة يُستحب الدعاء بها، وليست بديلًا عن العلاج الطبي أو السعي المشروع أو الاستشارة المختصة.',
-      'التطبيق يُقدَّم «كما هو» دون ضمانات تتجاوز صحة نسبة النصوص إلى مصادرها المعلنة.',
-    ],
-  },
-  {
-    title: 'البيانات والملكية',
-    body: [
-      'بياناتك المحلية ملكك، وتحذفها متى شئت من الإعدادات.',
-      'خط «أميري» و«IBM Plex Sans Arabic» مفتوحا المصدر ويُستخدمان وفق رخصتيهما، وأيقونات Ionicons وفق رخصة MIT.',
-    ],
-  },
-  {
-    title: 'تعديل الشروط',
-    body: [
-      'قد تُحدَّث هذه الشروط مع إضافة ميزات جديدة (كالحسابات والمجتمع). سيظهر تاريخ التحديث في هذه الصفحة.',
-      `للتواصل: ${config.supportEmail}`,
-    ],
-  },
-];
+/** Date shown as "last updated"; bump it whenever the clauses change. */
+const TERMS_UPDATED_AT = '2026-09-12';
 
-/** الشروط والاستخدام — including the content-authenticity policy. */
+/** Built per render so the clauses follow the active language. */
+function buildClauses(t: Translate): Clause[] {
+  return [
+    {
+      title: t('settings.terms.contentTitle'),
+      body: [
+        t('settings.terms.content1'),
+        t('settings.terms.content2'),
+      ],
+    },
+    {
+      title: t('settings.terms.sourcesTitle'),
+      body: [
+        t('settings.terms.sources1'),
+        t('settings.terms.sources2'),
+        t('settings.terms.sources3'),
+        t('settings.terms.sourcesStats', {
+          version: CONTENT_STATS.version,
+          duas: CONTENT_STATS.duaCount,
+          categories: CONTENT_STATS.categoryCount,
+        }),
+      ],
+    },
+    {
+      title: t('settings.terms.usageTitle'),
+      body: [
+        t('settings.terms.usage1'),
+        t('settings.terms.usage2'),
+      ],
+    },
+    {
+      title: t('settings.terms.communityTitle'),
+      body: [
+        t('settings.terms.community1'),
+        t('settings.terms.community2'),
+      ],
+    },
+    {
+      title: t('settings.terms.disclaimerTitle'),
+      body: [
+        t('settings.terms.disclaimer1'),
+        t('settings.terms.disclaimer2'),
+      ],
+    },
+    {
+      title: t('settings.terms.dataTitle'),
+      body: [
+        t('settings.terms.data1'),
+        t('settings.terms.data2'),
+      ],
+    },
+    {
+      title: t('settings.terms.changesTitle'),
+      body: [
+        t('settings.terms.changes1'),
+        t('settings.terms.contact', { email: config.supportEmail }),
+      ],
+    },
+  ];
+}
+
+/** Terms & use — including the content-authenticity policy. */
 export default function TermsScreen() {
   const theme = useAppTheme();
+  const { t, language } = useI18n();
+  const clauses = useMemo(() => buildClauses(t), [t]);
 
   return (
     <Screen scroll testID="settings-terms">
       <View style={{ marginHorizontal: -theme.layout.screenGutter }}>
-        <AppHeader title="الشروط والاستخدام" subtitle="آخر تحديث: ٢٠٢٦/٠٩/١٢" />
+        <AppHeader
+          title={t('settings.terms')}
+          subtitle={t('settings.terms.lastUpdated', { date: formatLongDate(TERMS_UPDATED_AT, language) })}
+        />
       </View>
 
       <View style={{ paddingTop: theme.spacing.lg, gap: theme.spacing.md, paddingBottom: theme.spacing.xxl }}>
-        {CLAUSES.map((clause) => (
+        {clauses.map((clause) => (
           <Card key={clause.title} padding={theme.spacing.lg}>
             <View style={{ gap: theme.spacing.sm }}>
               <AppText weight="semiBold">{clause.title}</AppText>

@@ -104,6 +104,23 @@ export interface FavoriteEntry {
   addedAt: string;
   /** Kept so the list can render before content resolves. */
   note?: string;
+  /**
+   * User-defined collections this entry belongs to. Absent (not empty) for
+   * favorites saved before collections existed — the service normalizes it.
+   */
+  collectionIds?: string[];
+}
+
+/**
+ * A named folder of favorites ("أدعية السفر", "Mes invocations").
+ *
+ * Collections are local data owned by `FavoritesService`; deleting one never
+ * deletes the duas inside it, it only removes the membership.
+ */
+export interface FavoriteCollection {
+  id: string;
+  name: string;
+  createdAt: string;
 }
 
 /* ------------------------------------------------------------------ */

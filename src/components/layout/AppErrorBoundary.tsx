@@ -5,6 +5,7 @@ import { AppError } from '@/core/errors/AppError';
 import { logger } from '@/core/utils/logger';
 import { services } from '@/services/registry';
 import { useAppTheme } from '@/design/theme/ThemeProvider';
+import { useI18n } from '@/core/i18n/I18nProvider';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { Ionicons } from '@expo/vector-icons';
@@ -13,6 +14,7 @@ const log = logger.child('error-boundary');
 
 function CrashScreen({ error, onReset }: { error: Error; onReset: () => void }) {
   const theme = useAppTheme();
+  const { t } = useI18n();
   const message = AppError.from(error).userMessage;
 
   return (
@@ -34,7 +36,7 @@ function CrashScreen({ error, onReset }: { error: Error; onReset: () => void }) 
           <Ionicons name="alert-circle-outline" size={32} color={theme.colors.error} />
         </View>
         <AppText variant="heading" align="center">
-          حدث خطأ غير متوقع
+          {t('error.genericTitle')}
         </AppText>
         <AppText align="center" tone="muted">
           {message}
@@ -42,7 +44,7 @@ function CrashScreen({ error, onReset }: { error: Error; onReset: () => void }) 
         <AppText align="center" tone="subtle" style={{ fontSize: 12 }}>
           {error.message}
         </AppText>
-        <Button label="إعادة المحاولة" onPress={onReset} icon="refresh-outline" />
+        <Button label={t('common.retry')} onPress={onReset} icon="refresh-outline" />
       </View>
     </ScrollView>
   );

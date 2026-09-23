@@ -18,7 +18,7 @@
 
 import type { AccentColorId, ThemePaletteId } from '@/core/types/domain';
 
-import { darken, ensureContrast, lighten, mix, mute, withAlpha } from './colorMath';
+import { contrastRatio, darken, ensureContrast, lighten, mix, mute, withAlpha } from './colorMath';
 import { darkColors, lightColors, type ColorSchemeName, type ColorTokens } from './themeColors';
 
 /** Per-mode seed. `primary` carries the palette; the rest keep surfaces calm. */
@@ -90,6 +90,22 @@ export const ACCENT_SEEDS: Readonly<Record<AccentColorId, AccentSeed>> = {
 const NEUTRAL_DARK_TEXT = '#0B1210';
 const NEUTRAL_LIGHT_TEXT = '#FFFFFF';
 
+/**
+ * Ink that reads on `color`, at WCAG AA or better.
+ *
+ * The scheme's usual ink is preferred (light scheme → white, dark scheme →
+ * near-black) but a mid-tone accent such as gold cannot carry white text, so
+ * the neutral with the better contrast wins and is then nudged the rest of the
+ * way by `ensureContrast`. Hue of the accent never changes.
+ */
+function inkOn(color: string, isDark: boolean): string {
+  const preferred = isDark ? NEUTRAL_DARK_TEXT : NEUTRAL_LIGHT_TEXT;
+  if (contrastRatio(preferred, color) >= 4.5) return preferred;
+  const dark = contrastRatio(NEUTRAL_DARK_TEXT, color);
+  const light = contrastRatio(NEUTRAL_LIGHT_TEXT, color);
+  return ensureContrast(dark >= light ? NEUTRAL_DARK_TEXT : NEUTRAL_LIGHT_TEXT, color, 4.5);
+}
+
 /** Derive the full token set from a palette seed. */
 function deriveFromSeed(seed: PaletteSeed, scheme: ColorSchemeName): ColorTokens {
   const isDark = scheme === 'dark';
@@ -124,7 +140,12 @@ function deriveFromSeed(seed: PaletteSeed, scheme: ColorSchemeName): ColorTokens
 
   const text = ensureContrast(base.text, background, 7);
   const textMuted = ensureContrast(base.textMuted, background, 4.5);
-  const textSubtle = ensureContrast(base.textSubtle, background, 3);
+  // AA for the subtle tone too, against both backdrops it is rendered on.
+  const subtleOnBackground = ensureContrast(base.textSubtle, background, 4.5);
+  const textSubtle =
+    contrastRatio(subtleOnBackground, surface) >= 4.5
+      ? subtleOnBackground
+      : ensureContrast(subtleOnBackground, surface, 4.5);
   const textLink = ensureContrast(isDark ? lighten(primary, 0.35) : primary, background, 4.5);
 
   const border = mix(base.border, primary, isDark ? 0.22 : 0.16);
@@ -193,7 +214,7 @@ export function applyAccent(
   const isDark = scheme === 'dark';
   const seed = ACCENT_SEEDS[accentId] ?? ACCENT_SEEDS.gold;
   const accent = isDark ? seed.dark : seed.light;
-  const onAccent = ensureContrast(isDark ? NEUTRAL_DARK_TEXT : NEUTRAL_LIGHT_TEXT, accent, 4.5);
+  const onAccent = inkOn(accent, isDark);
   const accentContainer = mix(accent, tokens.background, isDark ? 0.8 : 0.88);
   return {
     ...tokens,

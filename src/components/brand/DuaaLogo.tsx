@@ -4,6 +4,7 @@ import Svg, { Circle, Defs, Line, Mask, Text as SvgText } from 'react-native-svg
 
 import { useAppTheme } from '@/design/theme/ThemeProvider';
 import { maskHide, maskReveal } from '@/design/tokens';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 export interface DuaaMarkProps {
   /** Side of the square mark in logical pixels. */
@@ -19,6 +20,7 @@ export interface DuaaMarkProps {
  */
 export const DuaaMark = memo(function DuaaMark({ size = 40, color, accent }: DuaaMarkProps) {
   const theme = useAppTheme();
+  const { t } = useI18n();
   const ink = color ?? theme.colors.primary;
   const gold = accent ?? theme.colors.accent;
   const maskId = `crescent-${size}-${ink.replace('#', '')}`;
@@ -28,7 +30,7 @@ export const DuaaMark = memo(function DuaaMark({ size = 40, color, accent }: Dua
   const cy = 24;
 
   return (
-    <Svg width={size} height={size} viewBox="0 0 48 48" accessibilityLabel="شعار دعاء" role="img">
+    <Svg width={size} height={size} viewBox="0 0 48 48" accessibilityLabel={t('app.logoA11y')} role="img">
       <Defs>
         <Mask id={maskId} maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="48">
           <Circle cx={cx} cy={cy} r={r} fill={maskReveal} />
@@ -58,6 +60,7 @@ export const DuaaWordmark = memo(function DuaaWordmark({
   showLatin = true,
 }: DuaaWordmarkProps) {
   const theme = useAppTheme();
+  const { t } = useI18n();
   const ink = color ?? theme.colors.text;
   const gold = accent ?? theme.colors.accent;
   const width = size;
@@ -65,7 +68,7 @@ export const DuaaWordmark = memo(function DuaaWordmark({
   const maskId = `lockup-${size}-${ink.replace('#', '')}`;
 
   return (
-    <Svg width={width} height={height} viewBox="0 0 200 200" accessibilityLabel="دعاء DUAA" role="img">
+    <Svg width={width} height={height} viewBox="0 0 200 200" accessibilityLabel={t('app.logoWordmarkA11y')} role="img">
       <Defs>
         <Mask id={maskId} maskUnits="userSpaceOnUse" x="0" y="0" width="200" height="200">
           <Circle cx={100} cy={42} r={26} fill={maskReveal} />
@@ -82,7 +85,7 @@ export const DuaaWordmark = memo(function DuaaWordmark({
         textAnchor="middle"
         fontFamily={theme.fontFamilies.scripture.bold}
       >
-        دعاء
+        {t('app.name')}
       </SvgText>
       {showLatin ? (
         <>
@@ -107,6 +110,7 @@ export const DuaaWordmark = memo(function DuaaWordmark({
 /** Mark + word side by side, used in compact headers. */
 export const DuaaInlineLogo = memo(function DuaaInlineLogo({ size = 28 }: { size?: number }) {
   const theme = useAppTheme();
+  const { t } = useI18n();
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing.sm }}>
       <DuaaMark size={size} />
@@ -117,7 +121,7 @@ export const DuaaInlineLogo = memo(function DuaaInlineLogo({ size = 28 }: { size
             justifyContent: 'center',
           }}
         >
-          <Svg width={size * 2.1} height={size * 0.72} viewBox="0 0 84 29" role="img" accessibilityLabel="دعاء">
+          <Svg width={size * 2.1} height={size * 0.72} viewBox="0 0 84 29" role="img" accessibilityLabel={t('app.name')}>
             <SvgText
               x={42}
               y={24}
@@ -126,7 +130,7 @@ export const DuaaInlineLogo = memo(function DuaaInlineLogo({ size = 28 }: { size
               textAnchor="middle"
               fontFamily={theme.fontFamilies.scripture.bold}
                   >
-              دعاء
+              {t('app.name')}
             </SvgText>
           </Svg>
         </View>

@@ -6,6 +6,7 @@ import { useAppTheme } from '@/design/theme/ThemeProvider';
 import { AppText } from './AppText';
 
 import { a11yState } from '@/core/a11y/stateProps';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 export interface SegmentedOption<T extends string> {
   value: T;
@@ -132,6 +133,7 @@ export const TextField = memo(function TextField({
   testID,
 }: TextFieldProps) {
   const theme = useAppTheme();
+  const { t } = useI18n();
 
   return (
     <View style={[{ gap: theme.spacing.xs }, style]}>
@@ -184,7 +186,7 @@ export const TextField = memo(function TextField({
           <Pressable
             onPress={onClear}
             accessibilityRole="button"
-            accessibilityLabel="مسح الحقل"
+            accessibilityLabel={t('common.clearField')}
             hitSlop={6}
             style={{ padding: theme.spacing.xs }}
           >

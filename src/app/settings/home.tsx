@@ -11,11 +11,11 @@ import { SettingsRow, SettingsSection } from '@/components/ui/SettingsRow';
 import { useToast } from '@/components/ui/Toast';
 
 import { homeSectionOptions } from '@/core/i18n/options';
-import { useI18n } from '@/core/i18n/I18nProvider';
 import type { HomeSectionId } from '@/core/types/domain';
 import { selectHomeSections, useSettingsStore } from '@/store/settingsStore';
 import { services } from '@/services/registry';
 import { AnalyticsEvents } from '@/services/contracts/AnalyticsService';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 /**
  * Home customization.

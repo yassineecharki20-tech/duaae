@@ -20,13 +20,13 @@ import {
   paletteOptions,
   textSizeOptions,
 } from '@/core/i18n/options';
-import { useI18n } from '@/core/i18n/I18nProvider';
 import { useSettingsStore } from '@/store/settingsStore';
 import { useFavoritesStore } from '@/store/favoritesStore';
 import { useTasbeehStore } from '@/store/tasbeehStore';
 import { useAzkarStore } from '@/store/azkarStore';
 import { services } from '@/services/registry';
 import { AnalyticsEvents } from '@/services/contracts/AnalyticsService';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 /**
  * Settings — the hub.

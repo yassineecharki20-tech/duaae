@@ -17,6 +17,7 @@
 
 import { config } from '@/core/config/env';
 import { logger } from '@/core/utils/logger';
+import { translate } from '@/core/i18n/state';
 
 import { AsyncStorageService } from './impl/AsyncStorageService';
 import { LocalContentService } from './impl/LocalContentService';
@@ -148,13 +149,13 @@ export type ServiceRegistry = typeof services;
 /** Which backend each capability is running on — shown in Settings ▸ About. */
 export function describeBackends(): readonly { capability: string; backend: string; ready: boolean }[] {
   return [
-    { capability: 'المحتوى (أدعية وأذكار)', backend: 'حزمة محلية — يعمل دون إنترنت', ready: true },
-    { capability: 'المفضلة', backend: 'تخزين الجهاز', ready: true },
-    { capability: 'التسبيح والأذكار', backend: 'تخزين الجهاز', ready: true },
-    { capability: 'تفضيلات الإشعارات', backend: 'تخزين الجهاز — الجدولة في المرحلة القادمة', ready: false },
-    { capability: 'تسجيل الدخول', backend: config.firebase.isConfigured ? 'Firebase' : 'غير مهيأ — المرحلة القادمة', ready: config.firebase.isConfigured },
-    { capability: 'قاعدة البيانات السحابية', backend: config.firebase.isConfigured ? 'Firestore' : 'غير مهيأة — المرحلة القادمة', ready: config.firebase.isConfigured },
-    { capability: 'المجتمع', backend: config.firebase.isConfigured ? 'Firestore' : 'غير مهيأ — المرحلة القادمة', ready: config.firebase.isConfigured },
-    { capability: 'التحليلات', backend: config.analyticsEnabled ? 'مفعّلة' : 'معطّلة', ready: config.analyticsEnabled },
+    { capability: translate('settings.about.backend.content'), backend: translate('settings.about.backend.contentDetail'), ready: true },
+    { capability: translate('settings.about.backend.favorites'), backend: translate('settings.about.backend.favoritesDetail'), ready: true },
+    { capability: translate('settings.about.backend.progress'), backend: translate('settings.about.backend.progressDetail'), ready: true },
+    { capability: translate('settings.about.backend.notifications'), backend: translate('settings.about.backend.notificationsDetail'), ready: false },
+    { capability: translate('error.feature.auth'), backend: config.firebase.isConfigured ? 'Firebase' : translate('settings.about.backend.authDetail'), ready: config.firebase.isConfigured },
+    { capability: translate('settings.about.backend.database'), backend: config.firebase.isConfigured ? 'Firestore' : translate('settings.about.backend.databaseDetail'), ready: config.firebase.isConfigured },
+    { capability: translate('settings.about.backend.community'), backend: config.firebase.isConfigured ? 'Firestore' : translate('settings.about.backend.communityDetail'), ready: config.firebase.isConfigured },
+    { capability: translate('settings.about.analytics'), backend: config.analyticsEnabled ? translate('common.enabled') : translate('common.disabled'), ready: config.analyticsEnabled },
   ];
 }

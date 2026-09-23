@@ -16,6 +16,7 @@ import { useToast } from '@/components/ui/Toast';
 import type { NotificationPreferences, ReminderChannel } from '@/core/types/domain';
 import { services } from '@/services/registry';
 import { AnalyticsEvents } from '@/services/contracts/AnalyticsService';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 const CHANNEL_ORDER: readonly ReminderChannel[] = ['morning', 'evening', 'dailyDua', 'tasbeeh'];
 
@@ -31,6 +32,7 @@ const TIME_CHOICES: readonly string[] = ['05:00', '06:30', '08:00', '12:30', '17
  */
 export default function NotificationsSettingsScreen() {
   const theme = useAppTheme();
+  const { t } = useI18n();
   const toast = useToast();
   const notifications = services.notifications();
 
@@ -99,8 +101,8 @@ export default function NotificationsSettingsScreen() {
       setPermission(result.data);
       toast.show(
         result.data === 'granted'
-          ? 'تم منح الإذن — الجدولة ستُفعّل مع المرحلة القادمة'
-          : `حالة الإذن: ${result.data}`,
+          ? t('settings.notifications.permissionGranted')
+          : t('settings.notifications.permissionStatus', { status: result.data }),
         result.data === 'granted' ? 'success' : 'info',
       );
     } else {
@@ -112,7 +114,7 @@ export default function NotificationsSettingsScreen() {
   return (
     <Screen scroll testID="settings-notifications">
       <View style={{ marginHorizontal: -theme.layout.screenGutter }}>
-        <AppHeader title="التذكيرات" />
+        <AppHeader title={t('settings.notifications.screenTitle')} />
       </View>
 
       <View style={{ paddingTop: theme.spacing.lg, gap: theme.spacing.lg, paddingBottom: theme.spacing.xxl }}>
@@ -126,15 +128,23 @@ export default function NotificationsSettingsScreen() {
                 color={scheduled ? theme.colors.primary : theme.colors.textMuted}
               />
               <AppText weight="semiBold" style={{ fontSize: 13.5 }}>
-                {scheduled ? 'التذكيرات مُجدولة على جهازك' : 'الاختيارات محفوظة — الجدولة لم تُفعّل بعد'}
+                {scheduled ? t('settings.notifications.scheduled') : t('settings.notifications.notScheduled')}
               </AppText>
             </View>
             <AppText tone="muted" style={{ fontSize: 12.5, lineHeight: 20 }}>
-              في هذه المرحلة يحفظ دعاء أوقاتك وتفضيلاتك على الجهاز ويتحقّق منها، لكنه لا يسجّل إشعارات
-              لدى نظام التشغيل. عند ربط خدمة الإشعارات ستعمل نفس هذه الشاشة دون تغيير في التصميم.
+              {t('settings.notifications.stageNote')}
             </AppText>
             <Chip
-              label={`حالة الإذن: ${permission === 'granted' ? 'ممنوح' : permission === 'denied' ? 'مرفوض' : permission === 'unavailable' ? 'غير متاح' : 'غير معروف'}`}
+              label={t('settings.notifications.permissionStatus', {
+                status:
+                  permission === 'granted'
+                    ? t('settings.notifications.permission.granted')
+                    : permission === 'denied'
+                      ? t('settings.notifications.permission.denied')
+                      : permission === 'unavailable'
+                        ? t('settings.notifications.permission.unavailable')
+                        : t('settings.notifications.permission.unknown'),
+              })}
               tone={permission === 'granted' ? 'primary' : 'neutral'}
             />
           </View>
@@ -148,8 +158,8 @@ export default function NotificationsSettingsScreen() {
         ) : (
           <>
             <SettingsSection
-              title="أذكار يومية"
-              description="اختر الوقت الذي يناسبك؛ يُحفظ اختيارك على الجهاز."
+              title={t('settings.notifications.dailySection')}
+              description={t('settings.notifications.dailyNote')}
             >
               {CHANNEL_ORDER.map((channel) => {
                 const reminder = preferences.reminders[channel];
@@ -166,7 +176,7 @@ export default function NotificationsSettingsScreen() {
                     {reminder.enabled ? (
                       <View style={{ paddingHorizontal: theme.spacing.lg, paddingBottom: theme.spacing.md, gap: theme.spacing.sm }}>
                         <AppText tone="subtle" style={{ fontSize: 11.5 }}>
-                          الوقت الحالي: {reminder.time}
+                          {t('settings.notifications.currentTime', { time: reminder.time })}
                         </AppText>
                         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing.xs }}>
                           {TIME_CHOICES.map((time) => (
@@ -185,11 +195,14 @@ export default function NotificationsSettingsScreen() {
               })}
             </SettingsSection>
 
-            <SettingsSection title="ساعات الهدوء">
+            <SettingsSection title={t('settings.notifications.quietHours')}>
               <SettingsRow
                 icon="moon-outline"
-                title="إيقاف التذكيرات ليلًا"
-                subtitle={`من ${preferences.quietHoursStart} إلى ${preferences.quietHoursEnd}`}
+                title={t('settings.notifications.quietHoursToggle')}
+                subtitle={t('settings.notifications.quietHoursRange', {
+                  start: preferences.quietHoursStart,
+                  end: preferences.quietHoursEnd,
+                })}
                 switchValue={preferences.quietHoursEnabled}
                 onSwitchChange={async (next) => {
                   const result = await notifications.updateQuietHours({ enabled: next });
@@ -209,21 +222,21 @@ export default function NotificationsSettingsScreen() {
               <Button
                 variant="outline"
                 size="md"
-                accessibilityLabel="طلب إذن الإشعارات"
-                onPress={() => void requestPermission()} label="طلب إذن الإشعارات" />
+                accessibilityLabel={t('settings.notifications.requestPermission')}
+                onPress={() => void requestPermission()} label={t('settings.notifications.requestPermission')} />
               <Button
                 variant="ghost"
                 size="md"
-                accessibilityLabel="إعادة ضبط التذكيرات"
+                accessibilityLabel={t('settings.notifications.resetReminders')}
                 onPress={async () => {
                   const result = await notifications.resetPreferences();
                   if (result.ok) {
                     setPreferences(result.data);
-                    toast.show('تمت إعادة ضبط التذكيرات', 'success');
+                    toast.show(t('settings.notifications.resetDone'), 'success');
                   } else {
                     toast.show(result.error.userMessage, 'error');
                   }
-                }} label="إعادة ضبط الأوقات الافتراضية" />
+                }} label={t('settings.notifications.resetDefaults')} />
             </View>
           </>
         )}

@@ -24,6 +24,8 @@ export const StorageKeys = {
 
   /** Content & progress */
   favorites: key('favorites'),
+  favoriteCollections: key('favorites.collections'),
+  recentDuas: key('duaa.recent'),
   tasbeeh: key('tasbeeh.state'),
   tasbeehCustomDhikr: key('tasbeeh.customDhikr'),
   azkarProgress: key('azkar.progress'),

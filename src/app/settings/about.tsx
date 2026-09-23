@@ -15,6 +15,7 @@ import { DuaaWordmark } from '@/components/brand/DuaaLogo';
 import { describeBackends, services } from '@/services/registry';
 import { config } from '@/core/config/env';
 import { ALL_DUAS, CONTENT_STATS, SESSIONS } from '@/data/content';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 /**
  * عن التطبيق.
@@ -25,6 +26,7 @@ import { ALL_DUAS, CONTENT_STATS, SESSIONS } from '@/data/content';
  */
 export default function AboutScreen() {
   const theme = useAppTheme();
+  const { t } = useI18n();
   const backends = useMemo(() => describeBackends(), []);
 
   const sourceBooks = useMemo(() => {
@@ -42,13 +44,13 @@ export default function AboutScreen() {
     [],
   );
 
-  const appVersion = Application.nativeApplicationVersion ?? 'تطوير (ويب)';
+  const appVersion = Application.nativeApplicationVersion ?? t('settings.about.devWeb');
   const buildVersion = Application.nativeBuildVersion ?? null;
 
   return (
     <Screen scroll testID="settings-about">
       <View style={{ marginHorizontal: -theme.layout.screenGutter }}>
-        <AppHeader title="عن التطبيق" />
+        <AppHeader title={t('settings.about.screenTitle')} />
       </View>
 
       <View style={{ paddingTop: theme.spacing.lg, gap: theme.spacing.lg, paddingBottom: theme.spacing.xxl }}>
@@ -56,27 +58,27 @@ export default function AboutScreen() {
           <View style={{ alignItems: 'center', gap: theme.spacing.md }}>
             <DuaaWordmark size={120} />
             <View style={{ flexDirection: 'row', gap: theme.spacing.xs, flexWrap: 'wrap', justifyContent: 'center' }}>
-              <Chip label={`الإصدار ${appVersion}`} />
-              {buildVersion ? <Chip label={`بناء ${buildVersion}`} /> : null}
-              <Chip label={`المحتوى ${CONTENT_STATS.version}`} />
-              <Chip label={config.environment === 'production' ? 'إنتاج' : config.environment === 'preview' ? 'معاينة' : 'تطوير'} />
+              <Chip label={t('settings.about.version', { version: appVersion })} />
+              {buildVersion ? <Chip label={t('settings.about.build', { build: buildVersion })} /> : null}
+              <Chip label={t('settings.about.contentVersion', { version: CONTENT_STATS.version })} />
+              <Chip label={config.environment === 'production' ? t('settings.about.env.production') : config.environment === 'preview' ? t('settings.about.env.preview') : t('settings.about.env.development')} />
             </View>
             <AppText tone="muted" style={{ fontSize: 12.5, lineHeight: 20 }} align="center">
-              تطبيق أدعية وأذكار يعمل دون إنترنت، بلا إعلانات وبلا تتبع. كل نص منسوب إلى مصدره المطبوع.
+              {t('settings.about.appDescription')}
             </AppText>
           </View>
         </Card>
 
-        <SettingsSection title="المحتوى">
-          <SettingsRow icon="library-outline" title="نصوص الأدعية والأذكار" value={String(CONTENT_STATS.duaCount)} />
-          <SettingsRow icon="albums-outline" title="التصنيفات" value={String(CONTENT_STATS.categoryCount)} />
-          <SettingsRow icon="today-outline" title="جلسات الأذكار" value={`${SESSIONS.length} (صباح، مساء، نوم)`} />
-          <SettingsRow icon="book-outline" title="آيات قرآنية مستخدمة كأدعية" value={String(quranCount)} />
+        <SettingsSection title={t('settings.about.contentSection')}>
+          <SettingsRow icon="library-outline" title={t('settings.about.contentDuas')} value={String(CONTENT_STATS.duaCount)} />
+          <SettingsRow icon="albums-outline" title={t('settings.about.contentCategories')} value={String(CONTENT_STATS.categoryCount)} />
+          <SettingsRow icon="today-outline" title={t('settings.about.contentSessions')} value={t('settings.about.contentSessionsValue', { count: SESSIONS.length })} />
+          <SettingsRow icon="book-outline" title={t('settings.about.contentQuran')} value={String(quranCount)} />
         </SettingsSection>
 
         <SettingsSection
-          title="المصادر"
-          description="قائمة مُستخرجة من المحتوى نفسه مع عدد النصوص المنسوبة لكل مصدر."
+          title={t('settings.about.sourcesSection')}
+          description={t('settings.about.sourcesNote')}
         >
           <View style={{ padding: theme.spacing.lg, gap: theme.spacing.sm }}>
             {sourceBooks.map(([book, count]) => (
@@ -86,20 +88,19 @@ export default function AboutScreen() {
               >
                 <AppText style={{ fontSize: 13 }}>{book}</AppText>
                 <AppText tone="subtle" style={{ fontSize: 12 }}>
-                  {count} نصًّا
+                  {t('settings.about.contentDuasValue', { count })}
                 </AppText>
               </View>
             ))}
             <AppText tone="subtle" style={{ fontSize: 11.5, lineHeight: 18, marginTop: theme.spacing.sm }}>
-              لا يضيف التطبيق أي نص من توليد آلي أو من مصادر غير موثوقة. ما لا يُعرف مصدره أو درجته لا
-              يُنشر.
+              {t('settings.about.noGeneratedText')}
             </AppText>
           </View>
         </SettingsSection>
 
         <SettingsSection
-          title="حالة الخدمات"
-          description="ما الذي يخدم كل ميزة فعليًا في هذا البناء — بلا ادعاء."
+          title={t('settings.about.servicesSection')}
+          description={t('settings.about.servicesNote')}
         >
           {backends.map((item) => (
             <SettingsRow
@@ -107,19 +108,19 @@ export default function AboutScreen() {
               icon={item.ready ? 'checkmark-circle-outline' : 'time-outline'}
               title={item.capability}
               subtitle={item.backend}
-              value={item.ready ? 'يعمل' : 'لاحقًا'}
+              value={item.ready ? t('common.works') : t('common.later')}
             />
           ))}
         </SettingsSection>
 
-        <SettingsSection title="التقنية">
-          <SettingsRow icon="code-slash-outline" title="المنصة" subtitle="Expo SDK 57 · React Native · TypeScript" />
-          <SettingsRow icon="server-outline" title="التخزين" subtitle="تخزين الجهاز (AsyncStorage) — يعمل دون اتصال" />
-          <SettingsRow icon="color-palette-outline" title="الخطوط" subtitle="أميري (نصوص شرعية) · IBM Plex Sans Arabic (واجهة)" />
+        <SettingsSection title={t('settings.about.techSection')}>
+          <SettingsRow icon="code-slash-outline" title={t('settings.about.platform')} subtitle="Expo SDK 57 · React Native · TypeScript" />
+          <SettingsRow icon="server-outline" title={t('settings.about.storage')} subtitle={t('settings.about.storageValue')} />
+          <SettingsRow icon="color-palette-outline" title={t('settings.about.fonts')} subtitle={t('settings.about.fontsValue')} />
           <SettingsRow
             icon="analytics-outline"
-            title="التحليلات"
-            subtitle={config.analyticsEnabled ? 'مفعّلة' : 'معطّلة — لا يُرسل أي حدث'}
+            title={t('settings.about.analytics')}
+            subtitle={config.analyticsEnabled ? t('settings.about.analyticsOn') : t('settings.about.analyticsOff')}
           />
         </SettingsSection>
 
@@ -131,7 +132,7 @@ export default function AboutScreen() {
             onPress={() => router.push('/settings/privacy')}
             accessibilityRole="button"
           >
-            سياسة الخصوصية
+            {t('settings.privacy.screenTitle')}
           </AppText>
           <AppText
             tone="primary"
@@ -140,13 +141,15 @@ export default function AboutScreen() {
             onPress={() => router.push('/settings/terms')}
             accessibilityRole="button"
           >
-            الشروط والاستخدام
+            {t('settings.terms')}
           </AppText>
           <AppText tone="muted" style={{ fontSize: 12.5 }}>
-            تواصل: {config.supportEmail}
+            {t('settings.about.contact', { email: config.supportEmail })}
           </AppText>
           <AppText tone="subtle" style={{ fontSize: 11.5 }}>
-            خدمة الدعم الحالية: {services.analytics().isEnabled ? 'مع تحليلات مفعّلة' : 'بلا تحليلات'}
+            {t('settings.about.analyticsService', {
+              state: services.analytics().isEnabled ? t('settings.about.withAnalytics') : t('settings.about.withoutAnalytics'),
+            })}
           </AppText>
         </View>
       </View>

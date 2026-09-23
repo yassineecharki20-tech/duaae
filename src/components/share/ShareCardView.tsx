@@ -8,6 +8,7 @@ import { DuaaMark } from '@/components/brand/DuaaLogo';
 import { formatSources } from '@/features/share/shareText';
 import { registerCardRef } from '@/features/share/cardCaptureRegistry';
 import { computeShareCardLayout } from '@/features/share/shareCardLayout';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 export interface ShareCardViewProps {
   dua: Dua;
@@ -28,6 +29,7 @@ export const ShareCardView = forwardRef<View, ShareCardViewProps>(function Share
   ref,
 ) {
   const theme = useAppTheme();
+  const { t } = useI18n();
   const effectiveScheme = scheme ?? (theme.isDark ? 'dark' : 'light');
   const layout = useMemo(() => computeShareCardLayout(dua, { scheme: effectiveScheme }), [dua, effectiveScheme]);
   const { palette } = layout;
@@ -51,7 +53,7 @@ export const ShareCardView = forwardRef<View, ShareCardViewProps>(function Share
         padding: 22,
         gap: 14,
       }}
-      accessibilityLabel={`بطاقة مشاركة لدعاء: ${dua.text}`}
+      accessibilityLabel={t('share.cardA11y', { text: dua.text })}
     >
       {/* Header */}
       <View style={{ alignItems: 'center', gap: 6, paddingTop: 10 }}>
@@ -60,7 +62,7 @@ export const ShareCardView = forwardRef<View, ShareCardViewProps>(function Share
           variant="scriptureTitle"
           style={{ color: palette.ink, fontSize: 34, lineHeight: 44 }}
         >
-          دعاء
+          {t('share.cardTitle')}
         </AppText>
         <View style={{ width: 74, height: 2, backgroundColor: palette.gold, borderRadius: 2 }} />
         <AppText weight="medium" style={{ color: palette.gold, fontSize: 11, letterSpacing: 4 }}>
@@ -102,7 +104,7 @@ export const ShareCardView = forwardRef<View, ShareCardViewProps>(function Share
             }}
           >
             <AppText align="center" style={{ color: palette.muted, fontSize: 11 }} numberOfLines={2}>
-              المصدر: {formatSources(dua)}
+              {t('duas.source.label', { text: formatSources(dua) })}
             </AppText>
           </View>
         ) : null}
@@ -118,7 +120,7 @@ export const ShareCardView = forwardRef<View, ShareCardViewProps>(function Share
           }}
         />
         <AppText weight="medium" style={{ color: palette.gold, fontSize: 11 }}>
-          دعاء — رفيقك اليومي للذكر
+          {t('share.cardTagline')}
         </AppText>
       </View>
 

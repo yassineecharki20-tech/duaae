@@ -8,6 +8,7 @@ import { useAppTheme } from '@/design/theme/ThemeProvider';
 
 import { AppText } from './AppText';
 import { Button } from './Button';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 export interface EmptyStateProps {
   icon?: keyof typeof Ionicons.glyphMap;
@@ -86,15 +87,16 @@ export interface ErrorStateProps {
  */
 export const ErrorState = memo(function ErrorState({ error, onRetry, title, style, testID }: ErrorStateProps) {
   const theme = useAppTheme();
+  const { t } = useI18n();
   const appError = error instanceof AppError ? error : AppError.from(error);
   const canRetry = appError.recoverable && Boolean(onRetry);
 
   const recoveryLabel =
     appError.recoveryAction === 'go-online'
-      ? 'تحقق من الاتصال'
+      ? t('common.checkConnection')
       : appError.recoveryAction === 'open-settings'
-        ? 'افتح الإعدادات'
-        : 'إعادة المحاولة';
+        ? t('common.openSettings')
+        : t('common.retry');
 
   return (
     <View
@@ -109,7 +111,7 @@ export const ErrorState = memo(function ErrorState({ error, onRetry, title, styl
       ]}
       testID={testID}
       accessibilityRole="alert"
-      accessibilityLabel={`${title ?? 'حدث خطأ'}. ${appError.userMessage}`}
+      accessibilityLabel={[title ?? t('error.genericTitle'), appError.userMessage].join(t('common.a11ySeparator'))}
     >
       <View
         style={{
@@ -124,7 +126,7 @@ export const ErrorState = memo(function ErrorState({ error, onRetry, title, styl
         <Ionicons name="cloud-offline-outline" size={30} color={theme.colors.error} />
       </View>
       <AppText variant="heading" align="center">
-        {title ?? 'تعذّر إتمام العملية'}
+        {title ?? t('error.actionFailed')}
       </AppText>
       <AppText tone="muted" align="center" style={{ maxWidth: 320 }}>
         {appError.userMessage}
@@ -141,8 +143,10 @@ export interface LoadingStateProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export const LoadingState = memo(function LoadingState({ label = 'جارٍ التحميل…', style }: LoadingStateProps) {
+export const LoadingState = memo(function LoadingState({ label, style }: LoadingStateProps) {
   const theme = useAppTheme();
+  const { t } = useI18n();
+  const text = label ?? t('common.loading');
   return (
     <View
       style={[
@@ -150,7 +154,7 @@ export const LoadingState = memo(function LoadingState({ label = 'جارٍ ال�
         style,
       ]}
       accessibilityRole="progressbar"
-      accessibilityLabel={label}
+      accessibilityLabel={text}
     >
       <View
         style={{
@@ -162,7 +166,7 @@ export const LoadingState = memo(function LoadingState({ label = 'جارٍ ال�
           borderTopColor: theme.colors.primary,
         }}
       />
-      <AppText tone="muted">{label}</AppText>
+      <AppText tone="muted">{text}</AppText>
     </View>
   );
 });
@@ -173,6 +177,7 @@ export const LoadingState = memo(function LoadingState({ label = 'جارٍ ال�
  */
 export const OfflineBanner = memo(function OfflineBanner() {
   const theme = useAppTheme();
+  const { t } = useI18n();
   const state = useConnectivityStore((s) => s.state);
   if (state !== 'offline') return null;
 
@@ -189,11 +194,11 @@ export const OfflineBanner = memo(function OfflineBanner() {
         marginBottom: theme.spacing.md,
       }}
       accessibilityRole="alert"
-      accessibilityLabel="لا يوجد اتصال بالإنترنت. المحتوى المحفوظ يعمل بشكل طبيعي."
+      accessibilityLabel={t('error.offline')}
     >
       <Ionicons name="wifi-outline" size={16} color={theme.colors.warning} />
       <AppText style={{ color: theme.colors.warning, fontSize: 13 }} weight="medium">
-        أنت غير متصل الآن — المحتوى المحفوظ يعمل كالمعتاد.
+        {t('error.offlineBanner')}
       </AppText>
     </View>
   );

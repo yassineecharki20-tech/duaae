@@ -18,6 +18,9 @@ export const fr: MessageCatalog = {
   'app.name': 'DUAA',
   'app.nameFull': 'DUAA | دعاء',
   'app.tagline': 'Votre compagnon quotidien de rappel',
+  'app.booting': 'Ouverture de DUAA',
+  'app.logoA11y': 'Logo de DUAA',
+  'app.logoWordmarkA11y': 'DUAA — logo complet',
 
   /* ------------------------------------------------------------- common */
   'common.cancel': 'Annuler',
@@ -58,6 +61,9 @@ export const fr: MessageCatalog = {
   'common.add': 'Ajouter',
   'common.openSettings': 'Ouvrir les réglages',
   'common.checkConnection': 'Vérifier la connexion',
+  'common.showAll': 'Tout afficher',
+  'common.details': 'Détails',
+  'common.a11ySeparator': ', ',
 
   /* ---------------------------------------------------------------- nav */
   'nav.tab.home': 'Accueil',
@@ -113,6 +119,14 @@ export const fr: MessageCatalog = {
   'home.sessionNow': 'C’est le moment',
   'home.sessionAnnouncement': '{title} — c’est le moment',
   'home.recentEmpty': 'Vous n’avez encore ouvert aucune invocation',
+  'home.shortcuts': 'Raccourcis',
+  'home.todayAzkar': 'Adhkar du jour',
+  'home.openToStart': 'Ouvrir pour commencer',
+  'home.contentLoadFailed': 'Impossible de charger le contenu. Réessayez depuis les réglages.',
+  'home.titleGreeting': 'Assalamu alaikum 👋',
+  'home.titleGreetingNamed': 'Assalamu alaikum {name} 👋',
+  'home.libraryFootnote': '{count} invocations et adhkar sourcés — accessibles entièrement hors ligne.',
+  'home.categoriesTitle': 'Parcourir les invocations',
 
   /* --------------------------------------------------------- categories */
   'category.screenTitle': 'Catégorie',
@@ -151,6 +165,11 @@ export const fr: MessageCatalog = {
   'category.session.morning': 'Adhkar du matin',
   'category.session.evening': 'Adhkar du soir',
   'category.session.sleep': 'Adhkar du coucher',
+  'category.openingSession': 'Ouverture de la séance d’adhkar…',
+  'category.itemsValue': '{count} dhikr',
+  'category.itemsValue.one': '{count} dhikr',
+  'category.itemsValue.two': '{count} dhikr',
+  'category.itemsValue.few': '{count} dhikr',
 
   /* -------------------------------------------------------------- duas */
   'duas.screenTitle': 'Invocations et adhkar',
@@ -168,6 +187,9 @@ export const fr: MessageCatalog = {
   'duas.source.label': 'Source : {text}',
   'duas.source.quranFull': 'Coran — sourate {surah}, verset {ayah}',
   'duas.virtueLabel': 'Mérite : {text}',
+  'duas.footnote': 'Chaque texte de DUAA est attribué à sa source imprimée. Le contenu est stocké sur votre appareil et fonctionne hors ligne.',
+  'duas.favoritesNote': 'Vous avez {count} duas dans vos favoris',
+  'duas.source.title': 'Source',
 
   /* ------------------------------------------------------------ reader */
   'reader.title': 'Invocation',
@@ -209,6 +231,11 @@ export const fr: MessageCatalog = {
   'azkar.tasbeeh': 'Tasbih',
   'azkar.counterDone': 'Terminé — {target} sur {target}',
   'azkar.counterTap': 'Touchez pour répéter — {current} sur {target}',
+  'azkar.sessionDoneNamed': 'Adhkar de {title} accomplis — qu’Allah accepte',
+  'azkar.headerSummary': '{duas} invocations · {repeats} répétitions',
+  'azkar.longest': 'Record : {count}',
+  'azkar.wellDone': 'Bien joué. Et maintenant ?',
+  'azkar.tapHint': 'Touchez le texte du dhikr pour compter une répétition. La progression concerne la journée et se remet à zéro à minuit.',
 
   /* ----------------------------------------------------------- tasbeeh */
   'tasbeeh.screenTitle': 'Tasbih',
@@ -243,10 +270,21 @@ export const fr: MessageCatalog = {
   'tasbeeh.targetReached': '{target} atteints — qu’Allah vous bénisse',
   'tasbeeh.a11y.counter': 'Compteur de tasbih — {value} sur {target}',
   'tasbeeh.a11y.counterHint': 'Touchez pour incrémenter le compteur',
+  'tasbeeh.quickAzkar': 'Adhkar rapides',
+  'tasbeeh.totalValue': 'Total : {count}',
+  'tasbeeh.roundsValue': 'Tours : {count}',
+  'tasbeeh.targetValue': 'Objectif : {count}',
+  'tasbeeh.todayTotal': 'Total de vos tasbih : {count}',
+  'tasbeeh.itemSummary': '{count} tasbih · {section}',
+  'tasbeeh.ofTarget': 'sur {target}',
 
   /* --------------------------------------------------------- favorites */
   'favorites.screenTitle': 'Favoris',
   'favorites.countSummary': '{count} invocations enregistrées',
+  'favorites.missingItems': '{count} éléments enregistrés pointent vers un texte absent de ce lot.',
+  'favorites.missingItems.one': '{count} élément enregistré pointe vers un texte absent de ce lot.',
+  'favorites.missingItems.two': '{count} éléments enregistrés pointent vers un texte absent de ce lot.',
+  'favorites.missingItems.few': '{count} éléments enregistrés pointent vers un texte absent de ce lot.',
   'favorites.emptyTitle': 'Aucune invocation enregistrée',
   'favorites.emptyBody':
     'Touchez le cœur à côté d’une invocation pour l’enregistrer ici. Les favoris restent sur votre appareil, même après la fermeture de l’application.',
@@ -311,6 +349,7 @@ export const fr: MessageCatalog = {
   'search.match.keyword': 'Dans les mots-clés',
   'search.match.category': 'Dans la catégorie',
   'search.match.source': 'Dans la source',
+  'search.matchLine': 'Trouvé dans {where} · {category}',
   'search.suggest.morning': 'Matin',
   'search.suggest.rizq': 'Subsistance',
   'search.suggest.forgiveness': 'Pardon',
@@ -365,6 +404,10 @@ export const fr: MessageCatalog = {
   'community.plan.moderationBody':
     'Chaque texte religieux est relu avant publication ; le signalement est possible pour tout contenu.',
   'community.publishDisabled': 'La publication nécessite un service de comptes — étape suivante',
+  'community.whatYouCanDoNow': 'Ce que vous pouvez faire maintenant :',
+  'community.whatArrivesAtLaunch': 'Ce qui sera disponible au lancement ?',
+  'community.shareDuaNow': 'Partager une invocation maintenant',
+  'community.emptyBodyHonest': '{message} Vous ne trouverez ici aucune donnée de démonstration ni publication fictive — nous préférons une page honnête jusqu’à la finalisation.',
 
   /* ----------------------------------------------------------- profile */
   'profile.screenTitle': 'Mon compte',
@@ -405,6 +448,13 @@ export const fr: MessageCatalog = {
   'profile.preference.home': 'Accueil',
   'profile.preference.reading': 'Lecture',
   'profile.preference.widget': 'Widget',
+  'profile.appSubtitle': 'DUAA — hors ligne, sans publicité, sans suivi.',
+  'profile.yourStats': 'Vos statistiques',
+  'profile.signInNotEnabled': 'La connexion n’est pas encore activée',
+  'profile.accountReadyNote': 'Le service de comptes est prêt dans le code, mais il attend la liaison avec Firebase Auth. D’ici là, votre profil, vos statistiques et vos favoris restent enregistrés sur cet appareil uniquement — et l’application n’affichera jamais un faux bouton de connexion.',
+  'profile.currentStreakValue': 'Série actuelle : {count} jours',
+  'profile.longestStreakValue': 'Plus longue série : {count} jours',
+  'profile.detailsArrow': 'Détails →',
 
   /* ---------------------------------------------------------- settings */
   'settings.screenTitle': 'Réglages',
@@ -572,6 +622,8 @@ export const fr: MessageCatalog = {
   'settings.notifications.notEnabled': 'Non activé',
   'settings.notifications.invalidTimeShort': 'Horaire invalide',
   'settings.notifications.tomorrow': 'Demain',
+  'settings.notifications.stageNote': 'À cette étape, DUAA enregistre et valide vos horaires et préférences sur l’appareil, mais il n’enregistre aucune notification auprès du système d’exploitation. Quand le service de notifications sera connecté, cet écran fonctionnera tel quel, sans changement de design.',
+  'settings.notifications.currentTime': 'Heure actuelle : {time}',
 
   /* --------------------------------------------- settings · widget */
   'settings.widget.screenTitle': 'Widget',
@@ -645,6 +697,9 @@ export const fr: MessageCatalog = {
     'Vos préférences sont enregistrées sur l’appareil et seront synchronisées avec votre compte dès que le service de comptes sera disponible.',
   'settings.account.prefsSyncUnavailable': 'Synchronisation indisponible — aucun compte lié',
   'settings.account.prefsSyncedAt': 'Dernière synchronisation : {date}',
+  'settings.account.signedInWithEmail': 'Connecté — {email}',
+  'settings.account.contactSupport': 'Pour toute question sur le compte ou les données : {email}',
+  'settings.account.deleteBody': 'Votre compte et les données qui y sont liées seront supprimés du serveur. Les données conservées sur votre appareil se suppriment depuis « Réglages ▸ Réinitialiser les données locales ».',
 
   /* ------------------------------------------------ settings · about */
   'settings.about.screenTitle': 'À propos',
@@ -677,6 +732,9 @@ export const fr: MessageCatalog = {
   'settings.about.analyticsOff': 'Désactivées — aucun événement envoyé',
   'settings.about.withAnalytics': 'Avec statistiques activées',
   'settings.about.withoutAnalytics': 'Sans statistiques',
+  'settings.about.contentDuasValue': '{count} textes',
+  'settings.about.contact': 'Contact : {email}',
+  'settings.about.analyticsService': 'Service de support actuel : {state}',
   'settings.about.backend.content': 'Contenu (invocations et adhkar)',
   'settings.about.backend.contentDetail': 'Bundlé localement — fonctionne hors ligne',
   'settings.about.backend.favorites': 'Favoris',
@@ -695,6 +753,8 @@ export const fr: MessageCatalog = {
   'settings.about.backend.analyticsOn': 'Activées',
   'settings.about.backend.analyticsOff': 'Désactivées',
   'settings.about.backend.haptics': 'Vibrations',
+  'settings.about.appDescription': 'Une application d’invocations et d’adhkar qui fonctionne hors ligne, sans publicité et sans suivi. Chaque texte est attribué à sa source imprimée.',
+  'settings.about.noGeneratedText': 'L’application n’ajoute aucun texte généré automatiquement ni aucune source non fiable. Ce dont la source ou le grade est inconnu n’est pas publié.',
 
   /* --------------------------------------------- settings · privacy */
   'settings.privacy.screenTitle': 'Politique de confidentialité',
@@ -733,6 +793,7 @@ export const fr: MessageCatalog = {
     'L’application est destinée au grand public et ne collecte pas sciemment de données d’enfants. Le contenu est religieux et éducatif, sans publicité ni achat intégré.',
   'settings.privacy.contactTitle': 'Contact',
   'settings.privacy.contactBody': 'Pour toute question relative à la confidentialité : {email}',
+  'settings.privacy.scopeNote': 'Cette page décrit précisément ce que fait cette version, et elle est tenue à jour depuis les réglages de l’application elle-même :',
 
   /* ----------------------------------------------- settings · terms */
   'settings.terms.screenTitle': 'Conditions d’utilisation',

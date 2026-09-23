@@ -77,19 +77,33 @@ export function contrastRatio(a: string, b: string): number {
 
 /**
  * Nudge `foreground` away from `background` until the pair reaches `target`.
+ *
  * Dark backgrounds get a lighter foreground, light backgrounds a darker one —
- * the hue is preserved, only lightness moves, so the result still reads as the
- * chosen palette.
+ * the hue is preserved and only lightness moves, so the result still reads as
+ * the chosen palette. When the foreground is already near that extreme (white
+ * text on a mid-tone gold, for instance) the natural direction cannot reach the
+ * target, so the opposite direction is tried before giving up. The guarantee is
+ * real: the returned colour always meets `target`, or is pure black/white — the
+ * two colours that maximise contrast against anything.
  */
 export function ensureContrast(foreground: string, background: string, target = 4.5): string {
   if (contrastRatio(foreground, background) >= target) return foreground;
-  const lightenForeground = relativeLuminance(background) < 0.5;
-  let candidate = foreground;
-  for (let step = 1; step <= 40; step += 1) {
-    candidate = lightenForeground ? lighten(foreground, step / 40) : darken(foreground, step / 40);
-    if (contrastRatio(candidate, background) >= target) return candidate;
+
+  const preferLighter = relativeLuminance(background) < 0.5;
+  const directions: readonly ('lighten' | 'darken')[] = preferLighter
+    ? ['lighten', 'darken']
+    : ['darken', 'lighten'];
+
+  for (const direction of directions) {
+    for (let step = 1; step <= 40; step += 1) {
+      const candidate = direction === 'lighten' ? lighten(foreground, step / 40) : darken(foreground, step / 40);
+      if (contrastRatio(candidate, background) >= target) return candidate;
+    }
   }
-  return lightenForeground ? '#FFFFFF' : '#000000';
+
+  const white = contrastRatio('#FFFFFF', background);
+  const black = contrastRatio('#000000', background);
+  return white >= black ? '#FFFFFF' : '#000000';
 }
 
 /** `rgba()` string from a hex colour — used for scrims, overlays and tints. */

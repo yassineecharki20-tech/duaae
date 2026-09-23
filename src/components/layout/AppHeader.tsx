@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppTheme } from '@/design/theme/ThemeProvider';
 import { AppText } from '@/components/ui/AppText';
 import { IconButton } from '@/components/ui/IconButton';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 export interface AppHeaderProps {
   title: string;
@@ -36,6 +37,7 @@ export const AppHeader = memo(function AppHeader({
   testID,
 }: AppHeaderProps) {
   const theme = useAppTheme();
+  const { t } = useI18n();
   const insets = useSafeAreaInsets();
 
   return (
@@ -57,7 +59,7 @@ export const AppHeader = memo(function AppHeader({
       {canGoBack ? (
         <IconButton
           icon="chevron-back"
-          accessibilityLabel="رجوع"
+          accessibilityLabel={t('common.back')}
           onPress={() => {
             if (onBack) onBack();
             else if (router.canGoBack()) router.back();

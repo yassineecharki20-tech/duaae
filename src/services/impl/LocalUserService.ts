@@ -3,6 +3,7 @@ import { err, ok, type Result } from '@/core/types/Result';
 import { logger } from '@/core/utils/logger';
 import { StorageKeys } from '@/core/constants/storageKeys';
 import type { LocalProfile } from '@/core/types/domain';
+import { translate } from '@/core/i18n/state';
 
 import type {
   UserPreferencesDocument,
@@ -109,7 +110,7 @@ export class LocalUserService implements UserService {
   async syncPreferences(_preferences: UserPreferencesDocument): Promise<Result<void>> {
     return err(
       AppError.notConfigured(
-        'مزامنة التفضيلات',
+        translate('settings.account.prefsSync'),
         'UserService.syncPreferences requires a Firestore backend.',
       ),
     );

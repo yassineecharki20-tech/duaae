@@ -2,6 +2,7 @@ import { Tabs } from 'expo-router/js-tabs';
 
 import { BottomTabBar } from '@/components/layout/BottomTabBar';
 import { useAppTheme } from '@/design/theme/ThemeProvider';
+import { useI18n } from '@/core/i18n/I18nProvider';
 
 /**
  * The five main destinations.
@@ -11,6 +12,7 @@ import { useAppTheme } from '@/design/theme/ThemeProvider';
  */
 export default function TabsLayout() {
   const theme = useAppTheme();
+  const { t } = useI18n();
 
   return (
     <Tabs
@@ -21,11 +23,11 @@ export default function TabsLayout() {
         lazy: true,
       }}
     >
-      <Tabs.Screen name="index" options={{ title: 'الرئيسية' }} />
-      <Tabs.Screen name="duas" options={{ title: 'الأدعية' }} />
-      <Tabs.Screen name="tasbeeh" options={{ title: 'التسبيح' }} />
-      <Tabs.Screen name="community" options={{ title: 'المجتمع' }} />
-      <Tabs.Screen name="profile" options={{ title: 'حسابي' }} />
+      <Tabs.Screen name="index" options={{ title: t('nav.tab.home') }} />
+      <Tabs.Screen name="duas" options={{ title: t('nav.section.duas') }} />
+      <Tabs.Screen name="tasbeeh" options={{ title: t('azkar.tasbeeh') }} />
+      <Tabs.Screen name="community" options={{ title: t('community.screenTitle') }} />
+      <Tabs.Screen name="profile" options={{ title: t('nav.tab.profile') }} />
     </Tabs>
   );
 }
