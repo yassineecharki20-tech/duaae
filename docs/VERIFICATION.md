@@ -15,6 +15,7 @@ collections.** Stage-1 results are preserved and still passing.
 | Type safety | `npm run typecheck` (`tsc --noEmit`) | **exit 0** — no errors, `strict: true` |
 | Lint | `npm run lint` (`expo lint` → ESLint 9 flat config) | **exit 0** — 0 errors, 0 warnings |
 | Unit + screen tests | `npm test` (`jest`) | **222 passed / 222**, 16 suites, 2 projects |
+| Web dev bundle | `npm run web:lan` then request the Metro entry bundle | HTTP 200, **5.9 MB** dev bundle built in 3.3 s, no unresolved-module errors; `/` serves `<html lang="ar" dir="rtl">` |
 | Production web build | `npx expo export --platform web` | **32 static routes** written to `dist/`, exit 0 |
 | Static HTML shell | inspect `dist/index.html` | `<html lang="ar" dir="rtl">`, `theme-color` = `#F9F6EE` / `#0A1512` per scheme, body CSS colours come from tokens |
 | Translation coverage | `tests/i18n.test.ts` + `tests/no-hardcoded-strings.test.ts` | Key parity ar/fr/en (842 / 804 / 804 top-level keys), placeholder parity, **zero** user-facing literals outside `core/i18n` |
