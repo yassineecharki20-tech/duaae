@@ -19,9 +19,18 @@ const ThemeContext = createContext<Theme>(buildTheme({ scheme: 'light' }));
  * a scheme switch re-renders once and nothing re-derives colors locally.
  */
 export function AppThemeProvider({ children }: PropsWithChildren) {
-  const appearance = useSettingsStore((state) => state.appearance);
-  const readingScale = useSettingsStore((state) => state.readingScale);
-  const motion = useSettingsStore((state) => state.motion);
+  const preferences = useSettingsStore((state) => state.preferences);
+  const {
+    appearance,
+    readingScale,
+    motion,
+    palette,
+    accent,
+    fontProfile,
+    density,
+    cardStyle,
+    highReadability,
+  } = preferences;
   const systemScheme = useSystemColorScheme();
   const systemReduceMotion = useReducedMotion();
   const [fontScale, setFontScale] = useState(() => PixelRatio.getFontScale());
@@ -43,8 +52,31 @@ export function AppThemeProvider({ children }: PropsWithChildren) {
     motion === 'on' ? true : motion === 'off' ? false : systemReduceMotion;
 
   const theme = useMemo(
-    () => buildTheme({ scheme, fontScale, readingScale, reduceMotion }),
-    [scheme, fontScale, readingScale, reduceMotion],
+    () =>
+      buildTheme({
+        scheme,
+        fontScale,
+        readingScale,
+        reduceMotion,
+        palette,
+        accent,
+        fontProfile,
+        density,
+        cardStyle,
+        highReadability,
+      }),
+    [
+      accent,
+      cardStyle,
+      density,
+      fontProfile,
+      fontScale,
+      highReadability,
+      palette,
+      readingScale,
+      reduceMotion,
+      scheme,
+    ],
   );
 
   // Keep the native/web chrome (status bar area, overscroll, PWA theme) in sync.

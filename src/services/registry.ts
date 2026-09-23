@@ -96,8 +96,8 @@ function readSettings(): { hapticsEnabled?: boolean; soundEnabled?: boolean } {
     // top-level import would make the module graph cyclic.
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { useSettingsStore } = require('@/store/settingsStore') as typeof import('@/store/settingsStore');
-    const state = useSettingsStore.getState();
-    return { hapticsEnabled: state.hapticsEnabled, soundEnabled: state.soundEnabled };
+    const { preferences } = useSettingsStore.getState();
+    return { hapticsEnabled: preferences.hapticsEnabled, soundEnabled: preferences.soundEnabled };
   } catch (cause) {
     log.warn('settings store unavailable; falling back to defaults', cause);
     return { hapticsEnabled: true, soundEnabled: true };

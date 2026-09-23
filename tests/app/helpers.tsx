@@ -2,23 +2,28 @@
  * Render helpers for screen-level tests.
  *
  * Screens are mounted inside the same providers the app uses at runtime
- * (RTL ▸ theme ▸ toast), then flushed so persisted stores finish hydrating.
+ * (i18n ▸ RTL ▸ theme ▸ toast), then flushed so persisted stores finish
+ * hydrating. The default language is Arabic, so assertions read Arabic strings
+ * unless a test changes the language first.
  */
 
 import type { ReactElement } from 'react';
 import { act, render, type RenderResult } from '@testing-library/react';
 
+import { I18nProvider } from '@/core/i18n/I18nProvider';
 import { RTLProvider } from '@/design/rtl/RTLProvider';
 import { AppThemeProvider } from '@/design/theme/ThemeProvider';
 import { ToastProvider } from '@/components/ui/Toast';
 
 export function withProviders(ui: ReactElement): ReactElement {
   return (
-    <RTLProvider>
-      <AppThemeProvider>
-        <ToastProvider>{ui}</ToastProvider>
-      </AppThemeProvider>
-    </RTLProvider>
+    <I18nProvider>
+      <RTLProvider>
+        <AppThemeProvider>
+          <ToastProvider>{ui}</ToastProvider>
+        </AppThemeProvider>
+      </RTLProvider>
+    </I18nProvider>
   );
 }
 

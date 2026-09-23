@@ -238,7 +238,7 @@ describe('appearance settings', () => {
     });
     await settle(2);
 
-    expect(useSettingsStore.getState().appearance).toBe('dark');
+    expect(useSettingsStore.getState().preferences.appearance).toBe('dark');
     // The theme actually changed: the rendered surface is the night background.
     expect(container.innerHTML).toContain('10, 21, 18');
   });
@@ -253,7 +253,7 @@ describe('appearance settings', () => {
     });
     await settle(2);
 
-    expect(useSettingsStore.getState().readingScale).toBe('xLarge');
+    expect(useSettingsStore.getState().preferences.readingScale).toBe('xLarge');
   });
 });
 

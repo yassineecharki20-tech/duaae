@@ -40,7 +40,7 @@ export default function DuaDetailScreen() {
 
   const dua = DUA_BY_ID.get(params.duaId ?? '');
   const category = dua ? CATEGORY_BY_ID.get(dua.categoryId) : undefined;
-  const readingScale = useSettingsStore((state) => state.readingScale);
+  const readingScale = useSettingsStore((state) => state.preferences.readingScale);
   const setReadingScale = useSettingsStore((state) => state.setReadingScale);
 
   const neighbours = useMemo(() => {

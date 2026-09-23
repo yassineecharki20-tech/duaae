@@ -209,16 +209,182 @@ export interface ReportPayload {
 /* ------------------------------------------------------------------ */
 
 export type AppearanceMode = 'system' | 'light' | 'dark';
-export type AppLanguage = 'ar';
+/**
+ * Interface language. Arabic is the product's first language and the default
+ * for anyone without a stored preference; French and English translate the
+ * interface only (see docs/CONTENT-POLICY.md).
+ */
+export type AppLanguage = 'ar' | 'fr' | 'en';
+export const APP_LANGUAGES = ['ar', 'fr', 'en'] as const satisfies readonly AppLanguage[];
+/** Default for a first launch with no persisted preference. */
+export const DEFAULT_APP_LANGUAGE: AppLanguage = 'ar';
 export type MotionPreference = 'system' | 'on' | 'off';
 
-export interface SettingsState {
-  appearance: AppearanceMode;
-  language: AppLanguage;
-  readingScale: import('@/design/tokens/typography').ReadingScale;
-  motion: MotionPreference;
-  soundEnabled: boolean;
-  hapticsEnabled: boolean;
+/**
+ * @deprecated Flat settings shape from before preferences were unified. Kept
+ * only so the v1 → v2 migration stays typed; new code uses `AppPreferences`.
+ */
+export type SettingsState = LegacySettingsPayload;
+
+/* ------------------------------------------------------------------ */
+/* Preferences — one structured object for every user choice            */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Colour palette. `default` is the shipped design (emerald primary, ivory
+ * surface, night text) — the other palettes are derived from seeds in
+ * `src/design/tokens/colorMath.ts` and re-derived for dark mode, so nothing
+ * here hardcodes a hex value.
+ */
+export type ThemePaletteId =
+  | 'default'
+  | 'emerald'
+  | 'midnight'
+  | 'sand'
+  | 'ocean'
+  | 'forest'
+  | 'rose'
+  | 'monochrome';
+
+export const THEME_PALETTE_IDS = [
+  'default',
+  'emerald',
+  'midnight',
+  'sand',
+  'ocean',
+  'forest',
+  'rose',
+  'monochrome',
+] as const satisfies readonly ThemePaletteId[];
+
+/** Accent used for secondary buttons, links and badges. Readable on both modes. */
+export type AccentColorId =
+  | 'gold'
+  | 'emerald'
+  | 'copper'
+  | 'teal'
+  | 'sapphire'
+  | 'rose'
+  | 'sand'
+  | 'slate';
+
+export const ACCENT_COLOR_IDS = [
+  'gold',
+  'emerald',
+  'copper',
+  'teal',
+  'sapphire',
+  'rose',
+  'sand',
+  'slate',
+] as const satisfies readonly AccentColorId[];
+
+/** Typography profile. Every profile keeps Arabic shaping intact. */
+export type FontProfileId = 'default' | 'elegant' | 'modern' | 'classic';
+
+export const FONT_PROFILE_IDS = ['default', 'elegant', 'modern', 'classic'] as const satisfies readonly FontProfileId[];
+
+/** Line and paragraph spacing inside dua and adhkar text. */
+export type ReadingDensity = 'compact' | 'comfortable' | 'spacious';
+
+export const READING_DENSITIES = ['compact', 'comfortable', 'spacious'] as const satisfies readonly ReadingDensity[];
+
+/** Dua card treatment. */
+export type CardStyleId = 'minimal' | 'rounded' | 'elegant' | 'glass' | 'classic';
+
+export const CARD_STYLE_IDS = ['minimal', 'rounded', 'elegant', 'glass', 'classic'] as const satisfies readonly CardStyleId[];
+
+/** What the (future) home-screen widget will show. Stored now, used later. */
+export type WidgetContentId = 'dailyDua' | 'tasbeeh' | 'azkar';
+
+export const WIDGET_CONTENT_IDS = ['dailyDua', 'tasbeeh', 'azkar'] as const satisfies readonly WidgetContentId[];
+
+export type WidgetSizeId = 'small' | 'medium';
+
+export const WIDGET_SIZE_IDS = ['small', 'medium'] as const satisfies readonly WidgetSizeId[];
+
+/** Sections the home screen can render, in the order the user arranges them. */
+export type HomeSectionId =
+  | 'dailyDua'
+  | 'morning'
+  | 'evening'
+  | 'tasbeeh'
+  | 'favorites'
+  | 'recent'
+  | 'community'
+  | 'quickActions';
+
+export const HOME_SECTION_IDS = [
+  'dailyDua',
+  'morning',
+  'evening',
+  'tasbeeh',
+  'favorites',
+  'recent',
+  'community',
+  'quickActions',
+] as const satisfies readonly HomeSectionId[];
+
+export interface HomeSectionPreference {
+  readonly id: HomeSectionId;
+  readonly visible: boolean;
+}
+
+/** The single preferences object: persisted once, read everywhere. */
+export interface AppPreferences {
+  /** Interface language. Arabic for anyone without a stored preference. */
+  readonly language: AppLanguage;
+  /** Light/dark/system. */
+  readonly appearance: AppearanceMode;
+  readonly palette: ThemePaletteId;
+  readonly accent: AccentColorId;
+  readonly fontProfile: FontProfileId;
+  /** Text size for dua and reading surfaces (S/M/L/XL). */
+  readonly readingScale: import('@/design/tokens/typography').ReadingScale;
+  readonly density: ReadingDensity;
+  readonly cardStyle: CardStyleId;
+  /** Higher contrast text and firmer borders. */
+  readonly highReadability: boolean;
+  readonly motion: MotionPreference;
+  readonly soundEnabled: boolean;
+  readonly hapticsEnabled: boolean;
+  /** Home sections, in display order, with visibility. */
+  readonly homeSections: readonly HomeSectionPreference[];
+  readonly widgetContent: WidgetContentId;
+  readonly widgetSize: WidgetSizeId;
+}
+
+/** Default home layout: every section visible, in the shipped order. */
+export function defaultHomeSections(): HomeSectionPreference[] {
+  return HOME_SECTION_IDS.map((id) => ({ id, visible: true }));
+}
+
+export const DEFAULT_PREFERENCES: AppPreferences = {
+  language: DEFAULT_APP_LANGUAGE,
+  appearance: 'system',
+  palette: 'default',
+  accent: 'gold',
+  fontProfile: 'default',
+  readingScale: 'normal',
+  density: 'comfortable',
+  cardStyle: 'rounded',
+  highReadability: false,
+  motion: 'system',
+  soundEnabled: true,
+  hapticsEnabled: true,
+  homeSections: defaultHomeSections(),
+  widgetContent: 'dailyDua',
+  widgetSize: 'medium',
+};
+
+/** Shape persisted by the settings store before preferences were unified (v1). */
+export interface LegacySettingsPayload {
+  readonly appearance?: AppearanceMode;
+  readonly language?: AppLanguage;
+  readonly readingScale?: import('@/design/tokens/typography').ReadingScale;
+  readonly motion?: MotionPreference;
+  readonly soundEnabled?: boolean;
+  readonly hapticsEnabled?: boolean;
 }
 
 /** Which UI surface is currently reachable. Drives offline/error/empty states. */

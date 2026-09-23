@@ -10,6 +10,20 @@ export interface UserPreferencesDocument {
   hapticsEnabled: boolean;
   reminders: Record<string, unknown>;
   updatedAt: string;
+  /**
+   * Personalization (stage 2). Optional so documents written before these
+   * existed still parse, and so the backend can adopt them incrementally.
+   */
+  palette?: string;
+  accent?: string;
+  fontProfile?: string;
+  density?: string;
+  cardStyle?: string;
+  highReadability?: boolean;
+  motion?: string;
+  homeSections?: readonly { id: string; visible: boolean }[];
+  widgetContent?: string;
+  widgetSize?: string;
 }
 
 /** Aggregated stats shown on the profile screen. */

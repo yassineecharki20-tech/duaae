@@ -6,11 +6,13 @@ import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { bootRTL } from '@/core/i18n/rtl';
+import { I18nProvider, useI18n } from '@/core/i18n/I18nProvider';
 import { loadFonts } from '@/design/fonts';
 import { AppThemeProvider, useAppTheme } from '@/design/theme/ThemeProvider';
 import { RTLProvider } from '@/design/rtl/RTLProvider';
 import { ToastProvider } from '@/components/ui/Toast';
 import { AppErrorBoundary } from '@/components/layout/AppErrorBoundary';
+import { AppText } from '@/components/ui/AppText';
 import { useConnectivityStore } from '@/store/connectivityStore';
 import { useAuthStore } from '@/store/authStore';
 import { useFavoritesStore } from '@/store/favoritesStore';
@@ -32,7 +34,7 @@ SplashScreen.preventAutoHideAsync().catch(() => undefined);
  */
 export default function RootLayout() {
   const [fontsReady, setFontsReady] = useState(false);
-  const [bootError, setBootError] = useState<string | null>(null);
+  const [bootError, setBootError] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -49,7 +51,7 @@ export default function RootLayout() {
       .catch((cause) => {
         log.error('font loading failed', cause);
         if (!cancelled) {
-          setBootError('تعذّر تحميل الخطوط. أعد تشغيل التطبيق.');
+          setBootError(true);
           setFontsReady(true);
         }
       });
@@ -77,6 +79,7 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <AppErrorBoundary>
+        <I18nProvider>
         <RTLProvider>
           <AppThemeProvider>
             <ToastProvider>
@@ -103,6 +106,9 @@ export default function RootLayout() {
                     <Stack.Screen name="search" options={{ animation: 'fade' }} />
                     <Stack.Screen name="settings/index" options={{ animation: 'slide_from_left' }} />
                     <Stack.Screen name="settings/appearance" options={{ animation: 'slide_from_left' }} />
+                    <Stack.Screen name="settings/personalization" options={{ animation: 'slide_from_left' }} />
+                    <Stack.Screen name="settings/home" options={{ animation: 'slide_from_left' }} />
+                    <Stack.Screen name="settings/widget" options={{ animation: 'slide_from_left' }} />
                     <Stack.Screen name="settings/notifications" options={{ animation: 'slide_from_left' }} />
                     <Stack.Screen name="settings/account" options={{ animation: 'slide_from_left' }} />
                     <Stack.Screen name="settings/language" options={{ animation: 'slide_from_left' }} />
@@ -114,13 +120,41 @@ export default function RootLayout() {
                 ) : (
                   <View style={{ flex: 1 }} />
                 )}
-                {bootError ? null : null}
+                {bootError ? <BootErrorBanner /> : null}
               </NavigationTheme>
             </ToastProvider>
           </AppThemeProvider>
         </RTLProvider>
+        </I18nProvider>
       </AppErrorBoundary>
     </SafeAreaProvider>
+  );
+}
+
+/**
+ * Font-loading failure, translated. Rendered below the provider so it can use
+ * `useI18n()`; the app still runs (system fonts), it just says so honestly.
+ */
+function BootErrorBanner() {
+  const theme = useAppTheme();
+  const { t } = useI18n();
+
+  return (
+    <View
+      style={{
+        position: 'absolute',
+        start: 0,
+        end: 0,
+        bottom: 0,
+        padding: theme.spacing.lg,
+        paddingBottom: theme.spacing.xl,
+        backgroundColor: theme.colors.errorContainer,
+      }}
+    >
+      <AppText style={{ color: theme.colors.onErrorContainer, fontSize: 13 }}>
+        {t('error.boot.fonts')}
+      </AppText>
+    </View>
   );
 }
 

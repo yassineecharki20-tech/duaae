@@ -2,7 +2,7 @@ import { memo, useMemo } from 'react';
 import { Text, type StyleProp, type TextProps, type TextStyle } from 'react-native';
 
 import { useAppTheme } from '@/design/theme/ThemeProvider';
-import { fontFamilies, fontSizes, letterSpacing, lineHeights, type FontSizeToken } from '@/design/tokens/typography';
+import { fontSizes, letterSpacing, type FontSizeToken } from '@/design/tokens/typography';
 
 export type TextVariant =
   | 'display'
@@ -26,13 +26,6 @@ export interface AppTextProps extends Omit<TextProps, 'style'> {
   style?: StyleProp<TextStyle>;
 }
 
-const WEIGHT_FAMILY: Record<TextWeight, string> = {
-  regular: fontFamilies.ui.regular,
-  medium: fontFamilies.ui.medium,
-  semiBold: fontFamilies.ui.semiBold,
-  bold: fontFamilies.ui.bold,
-};
-
 const VARIANT_SIZE: Record<TextVariant, FontSizeToken> = {
   display: 'hero',
   title: 'title1',
@@ -48,8 +41,12 @@ const VARIANT_SIZE: Record<TextVariant, FontSizeToken> = {
  * The only text component in the app.
  *
  * Everything typographic funnels through here so the accessibility font scale,
- * the scripture reading scale and the Arabic face choices are applied exactly
- * once. `role`-correct accessibility props are forwarded untouched.
+ * the user's text size and density, the active typography profile and the
+ * Arabic face choices are applied exactly once. Scripture variants stay
+ * right-to-left (the texts are always Arabic); interface text is `auto`, so it
+ * follows whichever language the interface is in.
+ *
+ * `role`-correct accessibility props are forwarded untouched.
  */
 export const AppText = memo(function AppText({
   variant = 'body',
@@ -99,17 +96,23 @@ export const AppText = memo(function AppText({
     const sizeToken = VARIANT_SIZE[variant];
     const base = theme.typography[sizeToken];
     const isTitle = variant === 'display' || variant === 'title' || variant === 'heading';
+    // Families come from the active typography profile, not from the token
+    // table, so the user's font choice reaches every label in the app.
+    const ui = theme.fontFamilies.ui;
+    const family = isTitle
+      ? theme.fontProfile.display.bold
+      : (ui[weight] ?? ui.regular);
 
     return {
-      fontFamily: WEIGHT_FAMILY[isTitle ? 'bold' : weight],
+      fontFamily: family,
       fontSize: base.fontSize,
-      lineHeight:
-        variant === 'body' || variant === 'callout'
-          ? Math.round(base.fontSize * lineHeights.normal)
-          : Math.round(base.fontSize * lineHeights.tight),
-      letterSpacing: variant === 'caption' ? letterSpacing.wide : letterSpacing.normal,
+      // `base.lineHeight` already carries the profile's body/tight rhythm.
+      lineHeight: base.lineHeight,
+      letterSpacing: variant === 'caption' ? letterSpacing.wide : base.letterSpacing,
       color: toneColor,
-      writingDirection: 'rtl',
+      // Interface text follows the active language; `auto` also keeps mixed
+      // Arabic/Latin strings (a dua title inside a French sentence) correct.
+      writingDirection: 'auto',
       ...(align ? { textAlign: align } : null),
     };
   }, [theme, variant, weight, tone, align]);

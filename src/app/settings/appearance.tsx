@@ -8,116 +8,130 @@ import { AppText } from '@/components/ui/AppText';
 import { Card } from '@/components/ui/Card';
 import { Segmented } from '@/components/ui/Controls';
 import { SettingsRow, SettingsSection } from '@/components/ui/SettingsRow';
+import { useToast } from '@/components/ui/Toast';
 
+import { appearanceOptions, motionOptions, textSizeOptions } from '@/core/i18n/options';
+import { useI18n } from '@/core/i18n/I18nProvider';
 import { useSettingsStore } from '@/store/settingsStore';
 import { services } from '@/services/registry';
 import { AnalyticsEvents } from '@/services/contracts/AnalyticsService';
-import { APPEARANCE_OPTIONS, MOTION_OPTIONS, READING_SCALE_LABELS } from '@/design/tokens/labels';
-import { readingScaleOptions, type ReadingScale } from '@/design/tokens/typography';
-import { useToast } from '@/components/ui/Toast';
-
-const SAMPLE_TEXT = 'رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي';
+import type { ReadingScale } from '@/design/tokens/typography';
 
 /**
- * المظهر والقراءة.
+ * Appearance and reading.
  *
- * Theme mode, religious-text reading size, motion preference and feedback
- * switches — each one writes to the persisted settings store the theme provider
- * already subscribes to, so the change is visible immediately and survives
- * restarts.
+ * Theme mode, religious-text size, motion preference and feedback switches —
+ * each one writes to the persisted preferences the theme provider already
+ * subscribes to, so the change is visible immediately and survives restarts.
+ * Every label comes from the translation catalog: nothing here is hardcoded in
+ * any language. Palette, accent, typography profile, density and card style
+ * live on the Personalization screen.
  */
 export default function AppearanceSettingsScreen() {
   const theme = useAppTheme();
   const toast = useToast();
+  const { t } = useI18n();
 
-  const appearance = useSettingsStore((state) => state.appearance);
+  const appearance = useSettingsStore((state) => state.preferences.appearance);
   const setAppearance = useSettingsStore((state) => state.setAppearance);
-  const readingScale = useSettingsStore((state) => state.readingScale);
+  const readingScale = useSettingsStore((state) => state.preferences.readingScale);
   const setReadingScale = useSettingsStore((state) => state.setReadingScale);
-  const motion = useSettingsStore((state) => state.motion);
+  const motion = useSettingsStore((state) => state.preferences.motion);
   const setMotion = useSettingsStore((state) => state.setMotion);
-  const soundEnabled = useSettingsStore((state) => state.soundEnabled);
+  const soundEnabled = useSettingsStore((state) => state.preferences.soundEnabled);
   const setSoundEnabled = useSettingsStore((state) => state.setSoundEnabled);
-  const hapticsEnabled = useSettingsStore((state) => state.hapticsEnabled);
+  const hapticsEnabled = useSettingsStore((state) => state.preferences.hapticsEnabled);
   const setHapticsEnabled = useSettingsStore((state) => state.setHapticsEnabled);
 
   const capabilities = useMemo(() => services.feedback().capabilities(), []);
+  const themeChoices = useMemo(() => appearanceOptions(t), [t]);
+  const motionChoices = useMemo(() => motionOptions(t), [t]);
+  const sizeChoices = useMemo(() => textSizeOptions(t), [t]);
+
+  const currentSizeLabel =
+    sizeChoices.find((option) => option.value === readingScale)?.label ?? readingScale;
 
   const track = (setting: string, value: string | boolean) => {
-    void services.analytics().track({ name: AnalyticsEvents.settingChanged, params: { setting, value } });
+    void services
+      .analytics()
+      .track({ name: AnalyticsEvents.settingChanged, params: { setting, value } });
   };
 
   return (
     <Screen scroll testID="settings-appearance">
       <View style={{ marginHorizontal: -theme.layout.screenGutter }}>
-        <AppHeader title="المظهر والقراءة" />
+        <AppHeader title={t('settings.appearance.screenTitle')} />
       </View>
 
-      <View style={{ paddingTop: theme.spacing.lg, gap: theme.spacing.lg, paddingBottom: theme.spacing.xxl }}>
-        <SettingsSection title="السمة">
+      <View
+        style={{ paddingTop: theme.spacing.lg, gap: theme.spacing.lg, paddingBottom: theme.spacing.xxl }}
+      >
+        <SettingsSection title={t('settings.appearance.theme')}>
           <View style={{ padding: theme.spacing.lg, gap: theme.spacing.md }}>
             <Segmented
-              options={APPEARANCE_OPTIONS.map((option) => ({ value: option.value, label: option.label }))}
+              options={themeChoices}
               value={appearance}
               onChange={(value) => {
                 setAppearance(value as typeof appearance);
                 track('appearance', value);
               }}
-              accessibilityLabel="اختيار السمة"
+              accessibilityLabel={t('settings.appearance.themeA11y')}
             />
             <AppText tone="subtle" style={{ fontSize: 12 }}>
-              «تلقائي» يتبع إعداد النظام ويتغيّر بين النهاري والليلي دون تدخّل منك.
+              {t('settings.appearance.themeNote')}
             </AppText>
           </View>
         </SettingsSection>
 
-        <SettingsSection title="حجم خط الأدعية">
+        <SettingsSection title={t('settings.appearance.textSize')}>
           <View style={{ padding: theme.spacing.lg, gap: theme.spacing.md }}>
             <Segmented
-              options={readingScaleOptions.map((option) => ({ value: option.value, label: option.label }))}
+              options={sizeChoices}
               value={readingScale}
               onChange={(value) => {
                 setReadingScale(value as ReadingScale);
                 track('reading_scale', value);
               }}
-              accessibilityLabel="حجم خط الأدعية"
+              accessibilityLabel={t('settings.appearance.textSizeA11y')}
             />
             <Card variant="muted" padding={theme.spacing.lg}>
               <AppText variant="scripture" align="center">
-                {SAMPLE_TEXT}
+                {t('settings.appearance.previewText')}
               </AppText>
-              <AppText tone="subtle" style={{ fontSize: 11.5, marginTop: theme.spacing.sm }} align="center">
-                الحجم الحالي: {READING_SCALE_LABELS[readingScale]}
+              <AppText
+                tone="subtle"
+                style={{ fontSize: 11.5, marginTop: theme.spacing.sm }}
+                align="center"
+              >
+                {t('settings.appearance.currentSize', { size: currentSizeLabel })}
               </AppText>
             </Card>
           </View>
         </SettingsSection>
 
-        <SettingsSection title="الحركة">
+        <SettingsSection title={t('settings.appearance.motion')}>
           <View style={{ padding: theme.spacing.lg, gap: theme.spacing.md }}>
             <Segmented
-              options={MOTION_OPTIONS.map((option) => ({ value: option.value, label: option.label }))}
+              options={motionChoices}
               value={motion}
               onChange={(value) => {
                 setMotion(value as typeof motion);
                 track('motion', value);
               }}
-              accessibilityLabel="تفضيل الحركة"
+              accessibilityLabel={t('settings.appearance.motionA11y')}
             />
             <AppText tone="subtle" style={{ fontSize: 12 }}>
-              «تقليل» يوقف الانتقالات والحركات داخل التطبيق — مفيد لمن يعاني من دوار الحركة.
+              {t('settings.appearance.motionNote')}
             </AppText>
           </View>
         </SettingsSection>
 
-        <SettingsSection title="الصوت واللمس">
+        <SettingsSection title={t('settings.appearance.feedback')}>
           <SettingsRow
             icon="volume-high-outline"
-            title="أصوات التسبيح"
+            title={t('settings.appearance.sound')}
             subtitle={
-              capabilities.sound
-                ? 'نقرة خفيفة مع كل عدّة، ونغمة عند إتمام الهدف'
-                : 'غير مدعوم على هذا الجهاز'
+              capabilities.sound ? t('settings.appearance.soundNote') : t('common.notSupportedDevice')
             }
             switchValue={soundEnabled}
             disabled={!capabilities.sound}
@@ -129,11 +143,11 @@ export default function AppearanceSettingsScreen() {
           />
           <SettingsRow
             icon="phone-portrait-outline"
-            title="الاهتزاز"
+            title={t('settings.appearance.haptics')}
             subtitle={
               capabilities.haptics
-                ? 'استجابة لمسية عند العدّ وإتمام الأذكار'
-                : 'غير مدعوم على هذا الجهاز (الويب مثلًا)'
+                ? t('settings.appearance.hapticsNote')
+                : t('common.notSupportedWeb')
             }
             switchValue={hapticsEnabled}
             disabled={!capabilities.haptics}
@@ -142,7 +156,7 @@ export default function AppearanceSettingsScreen() {
               track('haptics_enabled', next);
               if (next) {
                 void services.feedback().haptic('light');
-                toast.show('تم تفعيل الاهتزاز', 'success');
+                toast.show(t('settings.appearance.hapticsEnabled'), 'success');
               }
             }}
           />

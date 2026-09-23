@@ -237,13 +237,17 @@ describe('settings', () => {
     expect(text).not.toContain('تم تسجيل الدخول');
   });
 
-  it('language ships Arabic only and labels English as planned', async () => {
+  it('language offers Arabic, French and English as real choices', async () => {
     const { container } = await renderScreen(<LanguageScreen />);
     const text = visibleText(container);
 
+    // All three are selectable: no "planned"/disabled language rows any more.
     expect(text).toContain('العربية');
-    expect(text).toContain('الترجمة قيد الإعداد');
-    expect(text).toContain('الاتجاه من اليمين إلى اليسار');
+    expect(text).toContain('Français');
+    expect(text).toContain('English');
+    expect(text).toContain('واجهة من اليمين إلى اليسار');
+    expect(text).toContain('واجهة من اليسار إلى اليمين');
+    expect(text).not.toContain('قيد الإعداد');
   });
 
   it('about lists version, sources and the backend readiness matrix', async () => {
