@@ -85,7 +85,7 @@ export const DuaaWordmark = memo(function DuaaWordmark({
         textAnchor="middle"
         fontFamily={theme.fontFamilies.scripture.bold}
       >
-        {t('app.name')}
+        {t('app.wordmark')}
       </SvgText>
       {showLatin ? (
         <>
@@ -121,7 +121,7 @@ export const DuaaInlineLogo = memo(function DuaaInlineLogo({ size = 28 }: { size
             justifyContent: 'center',
           }}
         >
-          <Svg width={size * 2.1} height={size * 0.72} viewBox="0 0 84 29" role="img" accessibilityLabel={t('app.name')}>
+          <Svg width={size * 2.1} height={size * 0.72} viewBox="0 0 84 29" role="img" accessibilityLabel={t('app.nameFull')}>
             <SvgText
               x={42}
               y={24}
@@ -130,7 +130,7 @@ export const DuaaInlineLogo = memo(function DuaaInlineLogo({ size = 28 }: { size
               textAnchor="middle"
               fontFamily={theme.fontFamilies.scripture.bold}
                   >
-              {t('app.name')}
+              {t('app.wordmark')}
             </SvgText>
           </Svg>
         </View>

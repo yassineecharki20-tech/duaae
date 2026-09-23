@@ -168,6 +168,7 @@ export const TextField = memo(function TextField({
           maxLength={maxLength}
           multiline={multiline}
           accessibilityLabel={accessibilityLabel}
+          testID={testID}
           style={[
             {
               flex: 1,

@@ -206,6 +206,7 @@ describe('catalog integrity', () => {
     // purpose in every language, and this list is the whole of them:
     const intentionallyArabic: Record<string, string> = {
       'app.nameFull': 'brand name',
+      'app.wordmark': 'the logo itself — the Arabic wordmark is drawn in every language',
       'share.branding': 'signature on shared cards',
       'tasbeeh.customPlaceholder': 'dhikr example — scripture is never translated',
       'settings.appearance.previewText': 'Arabic shaping preview for the font/reading pickers',

@@ -17,6 +17,7 @@ export const en: MessageCatalog = {
   /* ---------------------------------------------------------------- app */
   'app.name': 'DUAA',
   'app.nameFull': 'DUAA | دعاء',
+  'app.wordmark': 'دعاء',
   'app.tagline': 'Your daily companion for remembrance',
   'app.booting': 'Starting DUAA',
   'app.logoA11y': 'DUAA logo',

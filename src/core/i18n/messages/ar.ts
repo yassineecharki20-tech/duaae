@@ -24,6 +24,7 @@ export const ar = {
   /* ---------------------------------------------------------------- app */
   'app.name': 'دعاء',
   'app.nameFull': 'DUAA | دعاء',
+  'app.wordmark': 'دعاء',
   'app.tagline': 'رفيقك اليومي للذكر',
   'app.booting': 'جارٍ تشغيل دعاء',
   'app.logoA11y': 'شعار دعاء',
@@ -307,6 +308,11 @@ export const ar = {
   /* --------------------------------------------------------- favorites */
   'favorites.screenTitle': 'المفضلة',
   'favorites.countSummary': '{count} دعاءً محفوظًا',
+  'favorites.countSummary.zero': 'لا أدعية محفوظة',
+  'favorites.countSummary.one': 'دعاء واحد محفوظ',
+  'favorites.countSummary.two': 'دعاءان محفوظان',
+  'favorites.countSummary.few': '{count} أدعية محفوظة',
+  'favorites.countSummary.many': '{count} دعاءً محفوظًا',
   'favorites.missingItems': '{count} عنصرًا محفوظًا يشير إلى نص غير متوفر في هذه الحزمة.',
   'favorites.missingItems.one': 'عنصر واحد محفوظ يشير إلى نص غير متوفر في هذه الحزمة.',
   'favorites.missingItems.two': 'عنصران محفوظان يشيران إلى نص غير متوفر في هذه الحزمة.',
